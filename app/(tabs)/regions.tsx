@@ -1,6 +1,6 @@
-import {ThemedText} from '@/components/atoms/themed-text';
-import {ThemedSafeAreaView} from '@/components/atoms/themed-safe-area-view';
-import {StyleSheet} from 'react-native';
+import { ThemedSafeAreaView } from '@/components/atoms/themed-safe-area-view';
+import { ThemedText } from '@/components/atoms/themed-text';
+import { StyleSheet } from 'react-native';
 
 export default function RegionsScreen() {
   return (

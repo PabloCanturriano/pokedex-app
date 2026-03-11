@@ -1,10 +1,10 @@
-import {Asset} from 'expo-asset';
-import {TextInput, View} from 'react-native';
-import {SvgUri} from 'react-native-svg';
+import { Asset } from 'expo-asset';
+import { TextInput, View } from 'react-native';
+import { SvgUri } from 'react-native-svg';
 
-import {styles} from '@/components/atoms/textbox/styles';
-import {type TextBoxProps} from '@/components/atoms/textbox/types';
-import {useThemeColor} from '@/hooks/use-theme-color';
+import { styles } from '@/components/atoms/textbox/styles';
+import { type TextBoxProps } from '@/components/atoms/textbox/types';
+import { useThemeColor } from '@/hooks/use-theme-color';
 
 export function TextBox({
   containerStyle,

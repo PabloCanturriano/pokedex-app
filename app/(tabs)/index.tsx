@@ -1,9 +1,9 @@
-import {useState} from 'react';
+import { useState } from 'react';
 
-import {TextBox} from '@/components/atoms/textbox';
-import {ThemedText} from '@/components/atoms/themed-text';
-import {ThemedSafeAreaView} from '@/components/atoms/themed-safe-area-view';
-import {StyleSheet} from 'react-native';
+import { TextBox } from '@/components/atoms/textbox';
+import { ThemedSafeAreaView } from '@/components/atoms/themed-safe-area-view';
+import { ThemedText } from '@/components/atoms/themed-text';
+import { StyleSheet } from 'react-native';
 
 export default function HomeScreen() {
   const [query, setQuery] = useState('');
