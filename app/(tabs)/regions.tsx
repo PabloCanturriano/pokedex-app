@@ -1,4 +1,4 @@
-import {ThemedText} from '@/components/themed-text';
+import { ThemedText } from '@/components/themed-text';
 
 export default function RegionsScreen() {
   return (

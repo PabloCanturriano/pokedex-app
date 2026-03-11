@@ -2,7 +2,9 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
-import { FavoritesTabIcon, PokedexTabIcon, RegionsTabIcon } from '@/components/ui/pokeball-icon';
+import { FavoritesTabIcon } from '@/components/icons/FavoritesTabIcon';
+import { PokedexTabIcon } from '@/components/icons/PokedexTabIcon';
+import { RegionsTabIcon } from '@/components/icons/RegionsTabIcon';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
