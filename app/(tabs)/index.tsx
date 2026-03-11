@@ -1,7 +1,7 @@
-import {ThemedText} from '@/components/themed-text';
+import { ThemedText } from '@/components/themed-text';
 
 export default function HomeScreen() {
   return (
-      <ThemedText >Home screen</ThemedText>
+      <ThemedText>Pokedex</ThemedText>
   );
 }
