@@ -1,11 +1,11 @@
-import {ThemedText} from '@/components/themed-text';
-import {ThemedView} from '@/components/themed-view';
-import {MagikarpEmptyState} from '@/components/icons/MagikarpEmptyState';
-import {StyleSheet, View} from 'react-native';
+import { ThemedSafeAreaView } from '@/components/atoms/themed-safe-area-view';
+import { ThemedText } from '@/components/atoms/themed-text';
+import { MagikarpEmptyState } from '@/components/icons/MagikarpEmptyState';
+import { StyleSheet, View } from 'react-native';
 
 export default function FavoritesScreen() {
   return (
-    <ThemedView style={styles.container}>
+    <ThemedSafeAreaView style={styles.container}>
       <MagikarpEmptyState />
       <View style={styles.textContainer}>
         <ThemedText type="subtitle" style={styles.title}>
@@ -15,7 +15,7 @@ export default function FavoritesScreen() {
           Click the heart icon on your favorite Pokémon and they will appear here.
         </ThemedText>
       </View>
-    </ThemedView>
+    </ThemedSafeAreaView>
   );
 }
 
