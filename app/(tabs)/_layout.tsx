@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { FavoritesTabIcon, PokedexTabIcon, RegionsTabIcon } from '@/components/ui/pokeball-icon';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
@@ -20,21 +20,21 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Pokedex',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ focused, size }) => <PokedexTabIcon focused={focused} size={size} />,
         }}
       />
       <Tabs.Screen
         name="regions"
         options={{
           title: 'Regions',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="globe" color={color} />,
+          tabBarIcon: ({ focused, size }) => <RegionsTabIcon focused={focused} size={size} />,
         }}
       />
       <Tabs.Screen
         name="favorites"
         options={{
           title: 'Favorites',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="star.fill" color={color} />,
+          tabBarIcon: ({ focused, size }) => <FavoritesTabIcon focused={focused} size={size} />,
         }}
       />
     </Tabs>
