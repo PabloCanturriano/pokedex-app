@@ -50,3 +50,11 @@ export const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: 'name-asc', label: 'A–Z' },
   { value: 'name-desc', label: 'Z–A' },
 ];
+
+export const POKEMON_TYPE_COLORS: Record<string, { bg: string; text: string }> =
+  Object.fromEntries(
+    POKEMON_TYPE_OPTIONS.filter((o) => o.value !== 'all' && o.color).map((o) => [
+      o.value,
+      { bg: o.color!, text: o.textColor ?? '#FFFFFF' },
+    ])
+  );
