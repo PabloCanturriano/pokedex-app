@@ -1,4 +1,4 @@
-`import {Asset} from 'expo-asset';
+import {Asset} from 'expo-asset';
 
 import {SvgTabIcon} from './SvgTabIcon';
 
