@@ -1,5 +1,5 @@
-import {Asset} from 'expo-asset';
-import {SvgUri} from 'react-native-svg';
+import { Asset } from 'expo-asset';
+import { SvgUri } from 'react-native-svg';
 
 type Props = {
   width?: number;

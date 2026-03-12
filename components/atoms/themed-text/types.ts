@@ -1,4 +1,4 @@
-import {type TextProps} from 'react-native';
+import { type TextProps } from 'react-native';
 
 export type ThemedTextType = 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
 

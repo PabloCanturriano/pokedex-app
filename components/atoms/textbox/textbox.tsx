@@ -6,6 +6,8 @@ import { styles } from '@/components/atoms/textbox/styles';
 import { type TextBoxProps } from '@/components/atoms/textbox/types';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
+const iconUri = Asset.fromModule(require('@/assets/svg/search.svg')).uri;
+
 export function TextBox({
   containerStyle,
   inputStyle,
@@ -24,14 +26,13 @@ export function TextBox({
 
   const textColor = useThemeColor({}, 'text');
   const defaultPlaceholderTextColor = useThemeColor({}, 'icon');
-  const iconUri = Asset.fromModule(require('@/assets/svg/search.svg')).uri;
 
   return (
-    <View style={[styles.container, {backgroundColor}, containerStyle]}>
+    <View style={[styles.container, { backgroundColor }, containerStyle]}>
       <SvgUri uri={iconUri} width={20} height={20} style={styles.icon} />
       <TextInput
         placeholderTextColor={placeholderTextColor ?? defaultPlaceholderTextColor}
-        style={[styles.input, {color: textColor, height: 30}, inputStyle]}
+        style={[styles.input, { color: textColor }, inputStyle]}
         {...rest}
       />
     </View>

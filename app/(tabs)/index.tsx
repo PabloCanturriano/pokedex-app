@@ -13,6 +13,7 @@ export default function HomeScreen() {
       <TextBox
         autoCapitalize="none"
         autoCorrect={false}
+        accessibilityLabel="Search Pokémon"
         placeholder="Search Pokémon"
         returnKeyType="search"
         value={query}
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-      paddingVertical: 16,
+    paddingVertical: 16,
     gap: 16,
   },
 });

@@ -1,7 +1,7 @@
-import {PlatformPressable} from '@react-navigation/elements';
+import { PlatformPressable } from '@react-navigation/elements';
 import * as Haptics from 'expo-haptics';
 
-import {type HapticTabProps} from '@/components/atoms/haptic-tab/types';
+import { type HapticTabProps } from '@/components/atoms/haptic-tab/types';
 
 export function HapticTab(props: HapticTabProps) {
   return (
