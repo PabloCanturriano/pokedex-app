@@ -82,3 +82,15 @@ export type PokemonTypeResponse = {
   name: string;
   pokemon: PokemonTypeEntry[];
 };
+
+// ── Type list endpoint ────────────────────────────────────────────────────────
+
+export type TypeListItem = {
+  name: string;
+  url: string;
+};
+
+export type TypeListResponse = {
+  count: number;
+  results: TypeListItem[];
+};

@@ -1,13 +1,13 @@
 import {useQuery} from '@tanstack/react-query';
 
 import {fetchPokemon, fetchPokemonsByType} from '@/api/pokemon/fetchers';
-import type {PokemonType} from '@/constants/pokemon';
 
-export function usePokemonsByType(type: Exclude<PokemonType, 'all'>) {
+export function usePokemonsByType(type: string) {
   return useQuery({
     queryKey: ['pokemon', 'type', type],
     queryFn: () => fetchPokemonsByType(type),
-    staleTime: 1000 * 60 * 10
+    enabled: type !== 'all',
+    staleTime: 1000 * 60 * 10,
   });
 }
 
