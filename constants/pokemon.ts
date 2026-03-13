@@ -19,7 +19,7 @@ export type PokemonType =
   | 'steel'
   | 'water';
 
-export type SortOption = 'number-asc' | 'number-desc';
+export type SortOption = 'number-asc' | 'number-desc' | 'name-asc' | 'name-desc';
 
 export const POKEMON_TYPE_OPTIONS: { value: PokemonType; label: string; color?: string; textColor?: string }[] =
   [
@@ -47,6 +47,8 @@ export const POKEMON_TYPE_OPTIONS: { value: PokemonType; label: string; color?: 
 export const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: 'number-asc', label: 'Lowest number' },
   { value: 'number-desc', label: 'Highest number' },
+  { value: 'name-asc', label: 'A–Z' },
+  { value: 'name-desc', label: 'Z–A' },
 ];
 
 export const POKEMON_TYPE_COLORS: Record<string, { bg: string; text: string }> =

@@ -2,6 +2,7 @@ import {Image} from 'expo-image';
 import {StyleSheet, View} from 'react-native';
 
 import {ThemedText} from '@/components/atoms/themed-text';
+import {FavoriteButton} from '@/components/icons/FavoriteButton';
 import {PokemonCardBackground} from '@/components/icons/PokemonCardBackground';
 import {PokemonTypeBadge} from '@/components/icons/PokemonTypeBadge';
 import {POKEMON_TYPE_COLORS} from '@/constants/pokemon';
@@ -44,6 +45,7 @@ export function PokemonCard({ id, name }: Props) {
           <Image source={{ uri: spriteUrl }} style={styles.sprite} contentFit="contain" />
         )}
       </View>
+      <FavoriteButton id={id} name={name} style={styles.favBtn} />
     </View>
   );
 }
@@ -83,15 +85,9 @@ const styles = StyleSheet.create({
     width: SPRITE_SIZE,
     height: SPRITE_SIZE,
   },
-  heart: {
+  favBtn: {
     position: 'absolute',
     top: 8,
     right: 8,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

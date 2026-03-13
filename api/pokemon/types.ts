@@ -1,96 +1,49 @@
-// ── List endpoint ────────────────────────────────────────────────────────────
+// ── Public normalized types (consumed by hooks and components) ───────────────
 
 export type PokemonListItem = {
+  id: number;
   name: string;
-  url: string;
 };
 
-export type PokemonListResponse = {
-  count: number;
-  next: string | null;
-  previous: string | null;
+export type PokemonListPage = {
   results: PokemonListItem[];
-};
-
-// ── Single Pokémon ────────────────────────────────────────────────────────────
-
-export type PokemonSprites = {
-  front_default: string | null;
-  front_shiny: string | null;
-  other: {
-    'official-artwork': {
-      front_default: string | null;
-      front_shiny: string | null;
-    };
-    home: {
-      front_default: string | null;
-      front_shiny: string | null;
-    };
-  };
-};
-
-export type PokemonType = {
-  slot: number;
-  type: {
-    name: string;
-    url: string;
-  };
-};
-
-export type PokemonStat = {
-  base_stat: number;
-  effort: number;
-  stat: {
-    name: string;
-    url: string;
-  };
-};
-
-export type PokemonAbility = {
-  ability: {
-    name: string;
-    url: string;
-  };
-  is_hidden: boolean;
-  slot: number;
+  hasMore: boolean;
 };
 
 export type Pokemon = {
   id: number;
   name: string;
-  base_experience: number;
-  height: number;
-  weight: number;
-  sprites: PokemonSprites;
-  types: PokemonType[];
-  stats: PokemonStat[];
-  abilities: PokemonAbility[];
+  types: { type: { name: string } }[];
+  sprites: { front_default: string | null };
 };
 
-// ── Type endpoint ─────────────────────────────────────────────────────────────
+// ── Internal GQL raw shapes (used only in fetchers) ───────────────────────────
 
-export type PokemonTypeEntry = {
-  pokemon: {
-    name: string;
-    url: string;
+type GqlSprites = {
+  front_default: string | null;
+  other?: {
+    'official-artwork'?: { front_default: string | null };
   };
-  slot: number;
 };
 
-export type PokemonTypeResponse = {
+export type GqlPokemon = {
   id: number;
   name: string;
-  pokemon: PokemonTypeEntry[];
+  pokemon_v2_pokemontypes: {
+    pokemon_v2_type: { name: string };
+  }[];
+  pokemon_v2_pokemonsprites: { sprites: GqlSprites }[];
 };
 
-// ── Type list endpoint ────────────────────────────────────────────────────────
-
-export type TypeListItem = {
-  name: string;
-  url: string;
-};
-
-export type TypeListResponse = {
-  count: number;
-  results: TypeListItem[];
-};
+export function normalizePokemon(raw: GqlPokemon): Pokemon {
+  return {
+    id: raw.id,
+    name: raw.name,
+    types: raw.pokemon_v2_pokemontypes.map((t) => ({
+      type: { name: t.pokemon_v2_type.name },
+    })),
+    sprites: {
+      front_default: raw.pokemon_v2_pokemonsprites[0]?.sprites?.front_default ?? null,
+    },
+  };
+}
