@@ -1,9 +1,7 @@
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
 
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-
-import { Asset } from 'expo-asset';
-import { SvgUri } from 'react-native-svg';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -15,9 +13,6 @@ import { PokemonCard } from '@/components/molecules/pokemon-card';
 import { REGION_OPTIONS, SORT_OPTIONS } from '@/constants/pokemon';
 import { Colors } from '@/constants/theme';
 import { usePokedex } from '@/hooks/usePokedex';
-
-const favCheckedUri = Asset.fromModule(require('@/assets/svg/fav-checked.svg')).uri;
-const favUncheckedUri = Asset.fromModule(require('@/assets/svg/fav_unchecked.svg')).uri;
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -87,7 +82,7 @@ export default function HomeScreen() {
             accessibilityLabel={showFavorites ? 'Show all Pokémon' : 'Show favorites'}
             accessibilityRole="button"
           >
-            <SvgUri uri={showFavorites ? favCheckedUri : favUncheckedUri} width={24} height={24} />
+            <Ionicons name={showFavorites ? 'heart' : 'heart-outline'} size={24} color="#fff" />
           </Pressable>
         </View>
       </View>
