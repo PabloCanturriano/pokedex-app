@@ -89,7 +89,6 @@ export default function PokemonDetailScreen() {
         )}
       </View>
 
-      {/* Scrollable content */}
       <SafeAreaView style={styles.scrollView} edges={['bottom']}>
       <ScrollView
         style={styles.scrollView}
@@ -188,7 +187,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   name: {
-    fontSize: 32,
+    paddingTop: 22,
+    fontSize: 34,
     fontWeight: '700',
   },
   number: {

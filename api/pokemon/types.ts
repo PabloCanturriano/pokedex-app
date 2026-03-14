@@ -80,7 +80,7 @@ export function normalizePokemonDetail(raw: GqlPokemonDetail): PokemonDetail {
     ability,
     category: raw.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonspeciesnames[0]?.genus ?? null,
     flavorText:
-      raw.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonspeciesflavortexts[0]?.flavor_text?.replace(/\f/g, ' ') ?? null,
+      raw.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonspeciesflavortexts[0]?.flavor_text?.replace(/[\n\f\r]/g, ' ') ?? null,
   };
 }
 
