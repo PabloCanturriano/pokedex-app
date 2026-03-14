@@ -4,6 +4,8 @@ import { useDebounce } from '../useDebounce';
 
 jest.useFakeTimers();
 
+type Props = { value: string };
+
 describe('useDebounce', () => {
    it('returns the initial value immediately', () => {
       const { result } = renderHook(() => useDebounce('hello', 400));
@@ -11,9 +13,10 @@ describe('useDebounce', () => {
    });
 
    it('does not update before the delay elapses', () => {
-      const { result, rerender } = renderHook(({ value }) => useDebounce(value, 400), {
-         initialProps: { value: 'a' },
-      });
+      const { result, rerender } = renderHook<string, Props>(
+         ({ value }) => useDebounce(value, 400),
+         { initialProps: { value: 'a' } }
+      );
 
       rerender({ value: 'b' });
       act(() => jest.advanceTimersByTime(300));
@@ -22,9 +25,10 @@ describe('useDebounce', () => {
    });
 
    it('updates after the delay elapses', () => {
-      const { result, rerender } = renderHook(({ value }) => useDebounce(value, 400), {
-         initialProps: { value: 'a' },
-      });
+      const { result, rerender } = renderHook<string, Props>(
+         ({ value }) => useDebounce(value, 400),
+         { initialProps: { value: 'a' } }
+      );
 
       rerender({ value: 'b' });
       act(() => jest.advanceTimersByTime(400));
@@ -33,15 +37,17 @@ describe('useDebounce', () => {
    });
 
    it('resets the timer when value changes rapidly', () => {
-      const { result, rerender } = renderHook(({ value }) => useDebounce(value, 400), {
-         initialProps: { value: 'a' },
-      });
+      const { result, rerender } = renderHook<string, Props>(
+         ({ value }) => useDebounce(value, 400),
+         { initialProps: { value: 'a' } }
+      );
 
       rerender({ value: 'b' });
       act(() => jest.advanceTimersByTime(200));
       rerender({ value: 'c' });
       act(() => jest.advanceTimersByTime(200));
 
+      // only 200ms passed since 'c' — should still be 'a'
       expect(result.current).toBe('a');
 
       act(() => jest.advanceTimersByTime(200));
@@ -49,9 +55,10 @@ describe('useDebounce', () => {
    });
 
    it('uses a custom delay', () => {
-      const { result, rerender } = renderHook(({ value }) => useDebounce(value, 1000), {
-         initialProps: { value: 'x' },
-      });
+      const { result, rerender } = renderHook<string, Props>(
+         ({ value }) => useDebounce(value, 1000),
+         { initialProps: { value: 'x' } }
+      );
 
       rerender({ value: 'y' });
       act(() => jest.advanceTimersByTime(999));
