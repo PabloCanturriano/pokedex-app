@@ -10,4 +10,6 @@ export type DrawerSelectProps<T extends string = string> = {
   options: DrawerSelectOption<T>[];
   onChange: (value: T) => void;
   title?: string;
+  type?: 'default' | 'icon';
+  icon?: string;
 };

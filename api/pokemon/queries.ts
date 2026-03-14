@@ -92,3 +92,37 @@ export const GET_FAVORITES_BY_TYPE = `
     }
   }
 `;
+
+export const GET_POKEMON_BY_REGION = `
+  query GetPokemonByRegion($minId: Int!, $maxId: Int!, $orderBy: [pokemon_v2_pokemon_order_by!]!) {
+    pokemon_v2_pokemon(
+      where: {
+        is_default: { _eq: true }
+        id: { _gte: $minId, _lte: $maxId }
+      }
+      order_by: $orderBy
+    ) {
+      id
+      name
+    }
+  }
+`;
+
+export const GET_POKEMON_BY_TYPE_AND_REGION = `
+  query GetPokemonByTypeAndRegion($type: String!, $minId: Int!, $maxId: Int!, $orderBy: [pokemon_v2_pokemon_order_by!]!) {
+    pokemon_v2_pokemon(
+      where: {
+        is_default: { _eq: true }
+        id: { _gte: $minId, _lte: $maxId }
+        pokemon_v2_pokemontypes: {
+          pokemon_v2_type: { name: { _eq: $type } }
+        }
+      }
+      order_by: $orderBy
+    ) {
+      id
+      name
+    }
+  }
+`;
+

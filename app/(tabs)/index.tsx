@@ -4,21 +4,28 @@ import {ActivityIndicator, FlatList, Pressable, StyleSheet, View} from 'react-na
 import {Asset} from 'expo-asset';
 import {SvgUri} from 'react-native-svg';
 
+import type {PokemonListItem} from '@/api/pokemon/types';
 import {DrawerSelect} from '@/components/atoms/drawer-select';
 import {PokemonCard} from '@/components/atoms/pokemon-card';
 import {TextBox} from '@/components/atoms/textbox';
 import {ThemedSafeAreaView} from '@/components/atoms/themed-safe-area-view';
 import {ThemedText} from '@/components/atoms/themed-text';
 import {MagikarpEmptyState} from '@/components/icons/MagikarpEmptyState';
-import type {PokemonListItem} from '@/api/pokemon/types';
-import {POKEMON_TYPE_OPTIONS, type PokemonType, SORT_OPTIONS, type SortOption} from '@/constants/pokemon';
+import {
+    POKEMON_TYPE_OPTIONS,
+    type PokemonType,
+    type Region,
+    REGION_OPTIONS,
+    SORT_OPTIONS,
+    type SortOption
+} from '@/constants/pokemon';
+import {useThemeColor} from '@/hooks/use-theme-color';
 import {useDebounce} from '@/hooks/useDebounce';
 import {useFavoritesList} from '@/hooks/useFavoritesList';
+import {usePokemonsByRegion, usePokemonsByType, usePokemonsByTypeAndRegion} from '@/hooks/usePokemon';
 import {usePokemonList} from '@/hooks/usePokemonList';
-import {usePokemonsByType} from '@/hooks/usePokemon';
 import {usePokemonSearch} from '@/hooks/usePokemonSearch';
 import {usePokemonTypes} from '@/hooks/usePokemonTypes';
-import {useThemeColor} from '@/hooks/use-theme-color';
 import {useFavoritesStore} from '@/store/useFavoritesStore';
 
 const favCheckedUri = Asset.fromModule(require('@/assets/svg/fav-checked.svg')).uri;
@@ -27,6 +34,7 @@ const favUncheckedUri = Asset.fromModule(require('@/assets/svg/fav_unchecked.svg
 export default function HomeScreen() {
   const [query, setQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<PokemonType>('all');
+  const [regionFilter, setRegionFilter] = useState<Region>('all');
   const [sortBy, setSortBy] = useState<SortOption>('number-asc');
   const [showFavorites, setShowFavorites] = useState(false);
 
@@ -34,10 +42,20 @@ export default function HomeScreen() {
   const trimmedQuery = debouncedQuery.trim().toLowerCase();
   const isFavoritesMode = showFavorites;
   const isSearching = !isFavoritesMode && trimmedQuery.length >= 2;
-  const isFiltered = !isSearching && !isFavoritesMode && typeFilter !== 'all';
+  
+  const hasTypeFilter = typeFilter !== 'all';
+  const hasRegionFilter = regionFilter !== 'all';
+  const isFiltered = !isSearching && !isFavoritesMode && (hasTypeFilter || hasRegionFilter);
+
+  const selectedRegion = REGION_OPTIONS.find((r) => r.value === regionFilter);
+  const minId = selectedRegion?.startId ?? 0;
+  const maxId = selectedRegion?.endId ?? 0;
 
   const listQuery = usePokemonList(sortBy);
   const typeQuery = usePokemonsByType(typeFilter, sortBy);
+  const regionQuery = usePokemonsByRegion(minId, maxId, sortBy);
+  const typeAndRegionQuery = usePokemonsByTypeAndRegion(typeFilter, minId, maxId, sortBy);
+  
   const favoritesQuery = useFavoritesList(isFavoritesMode, sortBy, typeFilter);
   const searchQuery = usePokemonSearch(debouncedQuery);
   const {data: typeOptions = POKEMON_TYPE_OPTIONS} = usePokemonTypes();
@@ -48,23 +66,47 @@ export default function HomeScreen() {
   const isLoading =
     isFavoritesMode ? favoritesQuery.isLoading
     : isSearching ? searchQuery.isFetching
-    : isFiltered ? typeQuery.isLoading
+    : (hasTypeFilter && hasRegionFilter) ? typeAndRegionQuery.isLoading
+    : hasRegionFilter ? regionQuery.isLoading
+    : hasTypeFilter ? typeQuery.isLoading
     : listQuery.isLoading;
 
   const isFetchingNextPage = listQuery.isFetchingNextPage;
 
   const pokemons = useMemo((): PokemonListItem[] => {
     if (isFavoritesMode) {
-      const favs = favoritesQuery.data ?? [];
+        let filtered = favoritesQuery.data ?? [];
+      
       if (trimmedQuery.length >= 2) {
-        return favs.filter((p) => p.name.includes(trimmedQuery));
+        filtered = filtered.filter((p) => p.name.includes(trimmedQuery));
       }
-      return favs;
+      
+      if (hasRegionFilter && minId && maxId) {
+        filtered = filtered.filter((p) => p.id >= minId && p.id <= maxId);
+      }
+      
+      return filtered;
     }
     if (isSearching) return searchQuery.data ?? [];
-    if (isFiltered) return typeQuery.data ?? [];
+    if (hasTypeFilter && hasRegionFilter) return typeAndRegionQuery.data ?? [];
+    if (hasRegionFilter) return regionQuery.data ?? [];
+    if (hasTypeFilter) return typeQuery.data ?? [];
     return listQuery.data?.pages.flatMap((p) => p.results) ?? [];
-  }, [isFavoritesMode, isSearching, isFiltered, trimmedQuery, searchQuery.data, favoritesQuery.data, typeQuery.data, listQuery.data]);
+  }, [
+    isFavoritesMode, 
+    isSearching, 
+    hasTypeFilter, 
+    hasRegionFilter, 
+    trimmedQuery, 
+    searchQuery.data, 
+    favoritesQuery.data, 
+    typeQuery.data, 
+    regionQuery.data, 
+    typeAndRegionQuery.data, 
+    listQuery.data,
+    minId,
+    maxId
+  ]);
 
   const showSearchEmpty = isSearching && !searchQuery.isFetching && pokemons.length === 0;
   const showEmpty = !isLoading && !showSearchEmpty && pokemons.length === 0;
@@ -91,13 +133,23 @@ export default function HomeScreen() {
         </View>
         <View style={styles.filterItem}>
           <DrawerSelect
+            value={regionFilter}
+            options={REGION_OPTIONS}
+            onChange={setRegionFilter}
+            title="Select region"
+          />
+        </View>
+        <View style={styles.iconItem}>
+          <DrawerSelect
             value={sortBy}
             options={SORT_OPTIONS}
             onChange={setSortBy}
             title="Sort by"
+            type="icon"
+            icon="swap-vertical"
           />
         </View>
-        <View style={styles.heartItem}>
+        <View style={styles.iconItem}>
           <Pressable
             style={[styles.heartPill, {backgroundColor: showFavorites ? '#FD525C' : pillBackground}]}
             onPress={() => setShowFavorites((prev) => !prev)}
@@ -172,13 +224,14 @@ const styles = StyleSheet.create({
   },
   filterRow: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 8,
   },
   filterItem: {
-    flex: 9,
+    flex: 1,
   },
-  heartItem: {
-    flex: 2,
+  iconItem: {
+    width: 42,
+    aspectRatio: 1,
   },
   heartPill: {
     flex: 1,

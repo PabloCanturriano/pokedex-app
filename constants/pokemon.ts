@@ -21,6 +21,21 @@ export type PokemonType =
 
 export type SortOption = 'number-asc' | 'number-desc' | 'name-asc' | 'name-desc';
 
+export type Region = 'all' | 'kanto' | 'johto' | 'hoenn' | 'sinnoh' | 'unova' | 'kalos' | 'alola' | 'galar' | 'paldea';
+
+export const REGION_OPTIONS: { value: Region; label: string; startId?: number; endId?: number }[] = [
+  { value: 'all', label: 'All regions' },
+  { value: 'kanto', label: 'Kanto', startId: 1, endId: 151 },
+  { value: 'johto', label: 'Johto', startId: 152, endId: 251 },
+  { value: 'hoenn', label: 'Hoenn', startId: 252, endId: 386 },
+  { value: 'sinnoh', label: 'Sinnoh', startId: 387, endId: 493 },
+  { value: 'unova', label: 'Unova', startId: 494, endId: 649 },
+  { value: 'kalos', label: 'Kalos', startId: 650, endId: 721 },
+  { value: 'alola', label: 'Alola', startId: 722, endId: 809 },
+  { value: 'galar', label: 'Galar', startId: 810, endId: 905 },
+  { value: 'paldea', label: 'Paldea', startId: 906, endId: 1025 },
+];
+
 export const POKEMON_TYPE_OPTIONS: { value: PokemonType; label: string; color?: string; textColor?: string }[] =
   [
     { value: 'all', label: 'All types' },

@@ -1,11 +1,13 @@
 import {gqlQuery} from '@/api/graphql-client';
 import {
-  GET_FAVORITES,
-  GET_FAVORITES_BY_TYPE,
-  GET_POKEMON,
-  GET_POKEMON_BY_TYPE,
-  GET_POKEMON_LIST,
-  SEARCH_POKEMON,
+    GET_FAVORITES,
+    GET_FAVORITES_BY_TYPE,
+    GET_POKEMON,
+    GET_POKEMON_BY_REGION,
+    GET_POKEMON_BY_TYPE,
+    GET_POKEMON_BY_TYPE_AND_REGION,
+    GET_POKEMON_LIST,
+    SEARCH_POKEMON,
 } from '@/api/pokemon/queries';
 import {
     type GqlPokemon,
@@ -56,6 +58,22 @@ export async function fetchPokemonsByType(type: string, sortBy: SortOption = 'nu
   return data.pokemon_v2_pokemon.map((p) => ({ id: p.id, name: p.name }));
 }
 
+export async function fetchPokemonsByRegion(minId: number, maxId: number, sortBy: SortOption = 'number-asc'): Promise<PokemonListItem[]> {
+  const data = await gqlQuery<{ pokemon_v2_pokemon: { id: number; name: string }[] }>(
+    GET_POKEMON_BY_REGION,
+    { minId, maxId, orderBy: toOrderBy(sortBy) },
+  );
+  return data.pokemon_v2_pokemon.map((p) => ({ id: p.id, name: p.name }));
+}
+
+export async function fetchPokemonsByTypeAndRegion(type: string, minId: number, maxId: number, sortBy: SortOption = 'number-asc'): Promise<PokemonListItem[]> {
+  const data = await gqlQuery<{ pokemon_v2_pokemon: { id: number; name: string }[] }>(
+    GET_POKEMON_BY_TYPE_AND_REGION,
+    { type, minId, maxId, orderBy: toOrderBy(sortBy) },
+  );
+  return data.pokemon_v2_pokemon.map((p) => ({ id: p.id, name: p.name }));
+}
+
 export async function searchPokemon(query: string): Promise<PokemonListItem[]> {
   const data = await gqlQuery<{ pokemon_v2_pokemon: { id: number; name: string }[] }>(
     SEARCH_POKEMON,
@@ -75,7 +93,7 @@ export async function fetchFavorites(
     typeFilter === 'all'
       ? { ids, orderBy }
       : { ids, type: typeFilter, orderBy };
-  const data = await gqlQuery<{ pokemon_v2_pokemon: Array<{ id: number; name: string }> }>(
+  const data = await gqlQuery<{ pokemon_v2_pokemon: { id: number; name: string }[] }>(
     query,
     variables,
   );

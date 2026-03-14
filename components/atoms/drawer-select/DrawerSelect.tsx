@@ -22,6 +22,8 @@ export function DrawerSelect<T extends string = string>({
   options,
   onChange,
   title,
+  type = 'default',
+  icon,
 }: DrawerSelectProps<T>) {
   const [open, setOpen] = useState(false);
 
@@ -63,13 +65,23 @@ export function DrawerSelect<T extends string = string>({
   return (
     <>
       <Pressable
-        style={[styles.pill, { backgroundColor: pillBackground }]}
+        style={[
+          styles.pill,
+          { backgroundColor: pillBackground },
+          type === 'icon' && { paddingHorizontal: 0, justifyContent: 'center', aspectRatio: 1 },
+        ]}
         onPress={() => setOpen(true)}
         accessibilityRole="button"
         accessibilityLabel={title}
       >
-        <Text style={[styles.pillText, { color: pillTextColor }]}>{selected.label}</Text>
-        <Ionicons name="chevron-down" size={14} color={pillTextColor} />
+        {type === 'icon' ? (
+          <Ionicons name={icon as any} size={24} color={pillTextColor} />
+        ) : (
+          <>
+            <Text style={[styles.pillText, { color: pillTextColor }]}>{selected.label}</Text>
+            <Ionicons name="chevron-down" size={14} color={pillTextColor} />
+          </>
+        )}
       </Pressable>
 
       <Modal visible={open} transparent animationType="slide" onRequestClose={close}>
