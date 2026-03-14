@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Typography } from '@/components/atoms/typography';
@@ -16,6 +17,7 @@ export default function ItemDetailScreen() {
    const { id, color } = useLocalSearchParams<{ id: string; color: string }>();
    const router = useRouter();
    const insets = useSafeAreaInsets();
+   const { t } = useTranslation();
    const { data: item, isPending, isError } = useItemDetail(Number(id));
 
    const headerColor = color ?? Colors.tint;
@@ -34,7 +36,7 @@ export default function ItemDetailScreen() {
             <Pressable onPress={() => router.back()} style={styles.errorBack}>
                <Ionicons name="chevron-back" size={28} color={Colors.text} />
             </Pressable>
-            <Typography>Failed to load item data.</Typography>
+            <Typography>{t('items.failedToLoad')}</Typography>
          </View>
       );
    }
@@ -46,7 +48,7 @@ export default function ItemDetailScreen() {
                <Pressable
                   onPress={() => router.back()}
                   hitSlop={12}
-                  accessibilityLabel="Go back"
+                  accessibilityLabel={t('common.goBack')}
                   accessibilityRole="button"
                >
                   <Ionicons name="chevron-back" size={28} color="#fff" />
@@ -76,12 +78,12 @@ export default function ItemDetailScreen() {
                <View style={styles.statsGrid}>
                   <StatCard
                      icon={<Ionicons name="cart-outline" size={16} color={Colors.text} />}
-                     label="BUY"
+                     label={t('items.buy')}
                      value={item.cost > 0 ? `₽${item.cost.toLocaleString()}` : '—'}
                   />
                   <StatCard
                      icon={<Ionicons name="cash-outline" size={16} color={Colors.text} />}
-                     label="SELL"
+                     label={t('items.sell')}
                      value={item.sellPrice > 0 ? `₽${item.sellPrice.toLocaleString()}` : '—'}
                   />
                </View>
@@ -92,14 +94,14 @@ export default function ItemDetailScreen() {
 
                {item.shortEffect ? (
                   <>
-                     <Typography style={styles.sectionTitle}>Effect</Typography>
+                     <Typography style={styles.sectionTitle}>{t('items.effect')}</Typography>
                      <Typography style={styles.sectionBody}>{item.shortEffect}</Typography>
                   </>
                ) : null}
 
                {item.effect && item.effect !== item.shortEffect ? (
                   <>
-                     <Typography style={styles.sectionTitle}>Details</Typography>
+                     <Typography style={styles.sectionTitle}>{t('items.details')}</Typography>
                      <Typography style={styles.sectionBody}>{item.effect}</Typography>
                   </>
                ) : null}

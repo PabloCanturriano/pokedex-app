@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { TextBox } from '@/components/atoms/textbox';
@@ -10,17 +11,18 @@ import { Colors } from '@/constants/theme';
 import { useItems } from '@/hooks/useItems';
 
 export default function ItemsScreen() {
+   const { t } = useTranslation();
    const { activeTab, query, setQuery, activePockets, activeColor, search, handleTabChange } =
       useItems();
 
    return (
       <SafeAreaView style={[styles.container, { backgroundColor: Colors.background }]}>
-         <Typography style={styles.title}>Items</Typography>
+         <Typography style={styles.title}>{t('items.title')}</Typography>
          <TabBar tabs={ITEM_TABS} activeTab={activeTab} onTabChange={handleTabChange} />
          <TextBox
             autoCapitalize="none"
             autoCorrect={false}
-            placeholder="Search items"
+            placeholder={t('items.searchPlaceholder')}
             returnKeyType="search"
             value={query}
             onChangeText={setQuery}

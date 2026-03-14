@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
    runOnJS,
@@ -25,6 +26,7 @@ export function DrawerSelect<T extends string = string>({
    type = 'default',
    icon,
 }: DrawerSelectProps<T>) {
+   const { t } = useTranslation();
    const [open, setOpen] = useState(false);
 
    const selected = options.find((o) => o.value === value) ?? options[0];
@@ -76,7 +78,7 @@ export function DrawerSelect<T extends string = string>({
                <Ionicons name={iconName} size={24} color={pillTextColor} />
             ) : (
                <>
-                  <Text style={[styles.pillText, { color: pillTextColor }]}>{selected.label}</Text>
+                  <Text style={[styles.pillText, { color: pillTextColor }]}>{t(selected.label)}</Text>
                   <Ionicons name="chevron-down" size={14} color={pillTextColor} />
                </>
             )}
@@ -109,7 +111,7 @@ export function DrawerSelect<T extends string = string>({
                               close();
                            }}
                            accessibilityRole="button"
-                           accessibilityLabel={option.label}
+                           accessibilityLabel={t(option.label)}
                            accessibilityState={{ selected: option.value === value }}
                         >
                            <Text
@@ -122,7 +124,7 @@ export function DrawerSelect<T extends string = string>({
                                  },
                               ]}
                            >
-                              {option.label}
+                              {t(option.label)}
                            </Text>
                         </Pressable>
                      ))}

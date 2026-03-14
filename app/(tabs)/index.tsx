@@ -4,6 +4,7 @@ import { useCallback } from 'react';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useTranslation } from 'react-i18next';
 import type { PokemonListItem } from '@/api/pokemon/types';
 import { MagikarpEmptyState } from '@/components/atoms/magikarp-empty-state';
 import { TextBox } from '@/components/atoms/textbox';
@@ -19,6 +20,7 @@ function Separator() {
 }
 
 export default function HomeScreen() {
+   const { t } = useTranslation();
    const router = useRouter();
    const {
       query,
@@ -69,9 +71,9 @@ export default function HomeScreen() {
          <MagikarpEmptyState />
          <View style={styles.emptyTextContainer}>
             <Typography type="defaultSemiBold" style={styles.emptyText}>
-               No Pokémon found for &quot;{debouncedQuery}&quot;
+               {t('pokedex.noResultsFor', { query: debouncedQuery })}
             </Typography>
-            <Typography style={styles.emptyText}>Try a partial name, e.g. &quot;char&quot;</Typography>
+            <Typography style={styles.emptyText}>{t('pokedex.tryPartial')}</Typography>
          </View>
       </>
    ) : isFavoritesMode && totalFavorites === 0 ? (
@@ -79,17 +81,17 @@ export default function HomeScreen() {
          <MagikarpEmptyState />
          <View style={styles.emptyTextContainer}>
             <Typography type="subtitle" style={styles.emptyText}>
-               You don&apos;t have your favorite Pokémon :(
+               {t('pokedex.noFavoritesTitle')}
             </Typography>
             <Typography style={styles.emptyText}>
-               Click the heart icon on your favorite Pokémon and they will appear here.
+               {t('pokedex.noFavoritesHint')}
             </Typography>
          </View>
       </>
    ) : (
       <MagikarpEmptyState
          message={
-            isFavoritesMode ? 'No favorites match your current filters' : 'No Pokémon found'
+            isFavoritesMode ? t('pokedex.noFavoritesFiltered') : t('pokedex.noPokemons')
          }
       />
    );
@@ -99,8 +101,8 @@ export default function HomeScreen() {
          <TextBox
             autoCapitalize="none"
             autoCorrect={false}
-            accessibilityLabel="Search Pokémon"
-            placeholder="Search Pokémon"
+            accessibilityLabel={t('pokedex.searchPlaceholder')}
+            placeholder={t('pokedex.searchPlaceholder')}
             returnKeyType="search"
             value={query}
             onChangeText={setQuery}
@@ -111,7 +113,7 @@ export default function HomeScreen() {
                   value={typeFilter}
                   options={typeOptions}
                   onChange={setTypeFilter}
-                  title="Select type"
+                  title={t('pokedex.selectType')}
                />
             </View>
             <View style={styles.filterItem}>
@@ -119,7 +121,7 @@ export default function HomeScreen() {
                   value={regionFilter}
                   options={REGION_OPTIONS}
                   onChange={setRegionFilter}
-                  title="Select region"
+                  title={t('pokedex.selectRegion')}
                />
             </View>
             <View style={styles.iconItem}>
@@ -127,7 +129,7 @@ export default function HomeScreen() {
                   value={sortBy}
                   options={SORT_OPTIONS}
                   onChange={setSortBy}
-                  title="Sort by"
+                  title={t('pokedex.sortBy')}
                   type="icon"
                   icon="swap-vertical"
                />
@@ -139,7 +141,7 @@ export default function HomeScreen() {
                      { backgroundColor: showFavorites ? '#FD525C' : Colors.text },
                   ]}
                   onPress={() => setShowFavorites((prev) => !prev)}
-                  accessibilityLabel={showFavorites ? 'Show all Pokémon' : 'Show favorites'}
+                  accessibilityLabel={showFavorites ? t('pokedex.showAll') : t('pokedex.showFavorites')}
                   accessibilityRole="button"
                >
                   <Ionicons
@@ -155,7 +157,7 @@ export default function HomeScreen() {
             <ActivityIndicator style={styles.loader} />
          ) : isError ? (
             <View style={styles.emptyState}>
-               <MagikarpEmptyState message="Something went wrong. Please try again." />
+               <MagikarpEmptyState message={t('common.error')} />
             </View>
          ) : showEmpty || showSearchEmpty ? (
             <View style={styles.emptyState}>{emptyFallback}</View>

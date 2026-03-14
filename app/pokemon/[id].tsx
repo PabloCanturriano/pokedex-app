@@ -3,6 +3,7 @@ import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Typography } from '@/components/atoms/typography';
@@ -22,6 +23,7 @@ export default function PokemonDetailScreen() {
    const numericId = Number(id);
    const router = useRouter();
    const insets = useSafeAreaInsets();
+   const { t } = useTranslation();
    const { data: pokemon, isPending, isError } = usePokemonDetail(numericId);
    const [isShiny, setIsShiny] = useState(false);
 
@@ -39,7 +41,7 @@ export default function PokemonDetailScreen() {
             <Pressable onPress={() => router.back()} style={styles.errorBack}>
                <Ionicons name="chevron-back" size={28} color={Colors.text} />
             </Pressable>
-            <Typography>Failed to load Pokémon data.</Typography>
+            <Typography>{t('pokedex.failedToLoad')}</Typography>
          </View>
       );
    }
@@ -51,7 +53,7 @@ export default function PokemonDetailScreen() {
                <Pressable
                   onPress={() => router.back()}
                   hitSlop={12}
-                  accessibilityLabel="Go back"
+                  accessibilityLabel={t('common.goBack')}
                   accessibilityRole="button"
                >
                   <Ionicons name="chevron-back" size={28} color="#fff" />
@@ -61,7 +63,7 @@ export default function PokemonDetailScreen() {
                      <Pressable
                         onPress={() => setIsShiny((v) => !v)}
                         hitSlop={12}
-                        accessibilityLabel={isShiny ? 'Show normal sprite' : 'Show shiny sprite'}
+                        accessibilityLabel={isShiny ? t('pokedex.showNormal') : t('pokedex.showShiny')}
                         accessibilityRole="button"
                      >
                         <Ionicons
@@ -102,7 +104,7 @@ export default function PokemonDetailScreen() {
                      }
                      disabled={numericId <= 1}
                      hitSlop={12}
-                     accessibilityLabel="Previous Pokémon"
+                     accessibilityLabel={t('pokedex.previousPokemon')}
                   >
                      <Ionicons
                         name="chevron-back-circle-outline"
@@ -120,7 +122,7 @@ export default function PokemonDetailScreen() {
                      }
                      disabled={numericId >= 1025}
                      hitSlop={12}
-                     accessibilityLabel="Next Pokémon"
+                     accessibilityLabel={t('pokedex.nextPokemon')}
                   >
                      <Ionicons
                         name="chevron-forward-circle-outline"
@@ -145,27 +147,27 @@ export default function PokemonDetailScreen() {
                <View style={styles.statsGrid}>
                   <StatCard
                      icon={<Ionicons name="scale-outline" size={16} color={Colors.text} />}
-                     label="WEIGHT"
-                     value={`${pokemon.weightKg} kg`}
+                     label={t('pokedex.weight')}
+                     value={t('pokedex.weightUnit', { value: pokemon.weightKg })}
                   />
                   <StatCard
                      icon={<Ionicons name="resize-outline" size={16} color={Colors.text} />}
-                     label="HEIGHT"
-                     value={`${pokemon.heightM} m`}
+                     label={t('pokedex.height')}
+                     value={t('pokedex.heightUnit', { value: pokemon.heightM })}
                   />
                   <StatCard
                      icon={<Ionicons name="grid-outline" size={16} color={Colors.text} />}
-                     label="CATEGORY"
+                     label={t('pokedex.category')}
                      value={pokemon.category ?? '—'}
                   />
                   <StatCard
                      icon={<Ionicons name="flash-outline" size={16} color={Colors.text} />}
-                     label="ABILITY"
+                     label={t('pokedex.ability')}
                      value={pokemon.ability ?? '—'}
                   />
                </View>
 
-               <Typography style={styles.sectionTitle}>Base Stats</Typography>
+               <Typography style={styles.sectionTitle}>{t('pokedex.baseStats')}</Typography>
                <View style={styles.statsList}>
                   {pokemon.stats.map((stat, i) => (
                      <StatBar key={stat.name} stat={stat} typeColor={pokemon.typeColor} index={i} />
@@ -174,7 +176,7 @@ export default function PokemonDetailScreen() {
 
                {pokemon.evolutionChain.length > 1 ? (
                   <>
-                     <Typography style={styles.sectionTitle}>Evolution</Typography>
+                     <Typography style={styles.sectionTitle}>{t('pokedex.evolution')}</Typography>
                      <EvolutionChain
                         evolutionChain={pokemon.evolutionChain}
                         currentId={numericId}

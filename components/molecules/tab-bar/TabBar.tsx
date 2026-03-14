@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { Typography } from '@/components/atoms/typography';
 import { Colors } from '@/constants/theme';
@@ -15,6 +16,7 @@ type Props = {
 };
 
 export function TabBar({ tabs, activeTab, onTabChange }: Props) {
+   const { t } = useTranslation();
    return (
       <View style={styles.container}>
          {tabs.map((tab) => {
@@ -28,7 +30,7 @@ export function TabBar({ tabs, activeTab, onTabChange }: Props) {
                   accessibilityState={{ selected: isActive }}
                >
                   <Typography style={[styles.label, isActive && styles.labelActive]}>
-                     {tab.label}
+                     {t(tab.label)}
                   </Typography>
                </Pressable>
             );

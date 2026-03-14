@@ -1,0 +1,92 @@
+{
+   "common": {
+      "goBack": "Go back",
+      "error": "Something went wrong. Please try again."
+   },
+   "pokedex": {
+      "searchPlaceholder": "Search Pokémon",
+      "selectType": "Select type",
+      "selectRegion": "Select region",
+      "sortBy": "Sort by",
+      "showFavorites": "Show favorites",
+      "showAll": "Show all Pokémon",
+      "noResultsFor": "No Pokémon found for \"{{query}}\"",
+      "tryPartial": "Try a partial name, e.g. \"char\"",
+      "noFavoritesTitle": "You don't have your favorite Pokémon :(",
+      "noFavoritesHint": "Click the heart icon on your favorite Pokémon and they will appear here.",
+      "noFavoritesFiltered": "No favorites match your current filters",
+      "noPokemons": "No Pokémon found",
+      "failedToLoad": "Failed to load Pokémon data.",
+      "showShiny": "Show shiny sprite",
+      "showNormal": "Show normal sprite",
+      "previousPokemon": "Previous Pokémon",
+      "nextPokemon": "Next Pokémon",
+      "baseStats": "Base Stats",
+      "evolution": "Evolution",
+      "weight": "WEIGHT",
+      "weightUnit": "{{value}} kg",
+      "height": "HEIGHT",
+      "heightUnit": "{{value}} m",
+      "category": "CATEGORY",
+      "ability": "ABILITY"
+   },
+   "items": {
+      "title": "Items",
+      "searchPlaceholder": "Search items",
+      "noResultsFor": "No items found for \"{{query}}\"",
+      "failedToLoad": "Failed to load item data.",
+      "buy": "BUY",
+      "sell": "SELL",
+      "effect": "Effect",
+      "details": "Details"
+   },
+   "favorites": {
+      "add": "Add to favorites",
+      "remove": "Remove from favorites"
+   },
+   "regions": {
+      "all": "All regions",
+      "kanto": "Kanto",
+      "johto": "Johto",
+      "hoenn": "Hoenn",
+      "sinnoh": "Sinnoh",
+      "unova": "Unova",
+      "kalos": "Kalos",
+      "alola": "Alola",
+      "galar": "Galar",
+      "paldea": "Paldea"
+   },
+   "types": {
+      "all": "All types",
+      "bug": "Bug",
+      "dark": "Dark",
+      "dragon": "Dragon",
+      "electric": "Electric",
+      "fairy": "Fairy",
+      "fighting": "Fighting",
+      "fire": "Fire",
+      "flying": "Flying",
+      "ghost": "Ghost",
+      "grass": "Grass",
+      "ground": "Ground",
+      "ice": "Ice",
+      "normal": "Normal",
+      "poison": "Poison",
+      "psychic": "Psychic",
+      "rock": "Rock",
+      "steel": "Steel",
+      "water": "Water"
+   },
+   "sort": {
+      "numberAsc": "Lowest number",
+      "numberDesc": "Highest number",
+      "nameAsc": "A–Z",
+      "nameDesc": "Z–A"
+   },
+   "itemTabs": {
+      "pokeballs": "Pokéballs",
+      "berries": "Berries",
+      "machines": "MT & MO",
+      "training": "Training"
+   }
+}

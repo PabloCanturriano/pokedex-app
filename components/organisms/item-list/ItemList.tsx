@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import type { Item } from '@/api/pokemon/types';
@@ -19,6 +20,7 @@ function Separator() {
 }
 
 export function ItemList({ pockets, search, query, color }: Props) {
+   const { t } = useTranslation();
    const router = useRouter();
    const { data, isPending, isError, isFetchingNextPage, hasNextPage, fetchNextPage } =
       useItemsList(pockets, search);
@@ -48,7 +50,7 @@ export function ItemList({ pockets, search, query, color }: Props) {
    if (isError) {
       return (
          <View style={styles.centered}>
-            <MagikarpEmptyState message="Something went wrong. Please try again." />
+            <MagikarpEmptyState message={t('common.error')} />
          </View>
       );
    }
@@ -56,7 +58,7 @@ export function ItemList({ pockets, search, query, color }: Props) {
    if (isEmpty) {
       return (
          <View style={styles.centered}>
-            <MagikarpEmptyState message={`No items found for "${query}"`} />
+            <MagikarpEmptyState message={t('items.noResultsFor', { query })} />
          </View>
       );
    }

@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { memo } from 'react';
 import { Pressable, StyleSheet, type ViewStyle } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export const FavoriteButton = memo(function FavoriteButton({ id, name, style }: Props) {
+   const { t } = useTranslation();
    const toggle = useFavoritesStore((s) => s.toggle);
    const isFavorite = useFavoritesStore((s) => s.isFavorite(id));
 
@@ -22,7 +24,7 @@ export const FavoriteButton = memo(function FavoriteButton({ id, name, style }: 
          onPress={() => toggle({ id, name })}
          style={[styles.button, style]}
          hitSlop={8}
-         accessibilityLabel={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+         accessibilityLabel={isFavorite ? t('favorites.remove') : t('favorites.add')}
          accessibilityRole="button"
       >
          <Ionicons
