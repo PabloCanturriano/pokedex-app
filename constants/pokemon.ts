@@ -59,6 +59,7 @@ export const POKEMON_TYPE_OPTIONS: { value: PokemonType; label: string; color?: 
     { value: 'water', label: 'Water', color: '#74ACF5' },
   ];
 
+
 export const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: 'number-asc', label: 'Lowest number' },
   { value: 'number-desc', label: 'Highest number' },

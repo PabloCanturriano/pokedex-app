@@ -14,7 +14,7 @@ export function ItemCard({ item }: Props) {
       <Image source={{ uri: item.spriteUrl }} style={styles.sprite} contentFit="contain" />
       <View style={styles.info}>
         <Typography style={styles.name}>{item.displayName}</Typography>
-        <Typography style={styles.category}>{item.category}</Typography>
+        <Typography style={styles.category}>{item.category.replace(/-/g, ' ')}</Typography>
       </View>
       {item.cost > 0 && (
         <View style={styles.costBadge}>

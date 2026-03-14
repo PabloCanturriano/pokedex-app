@@ -138,24 +138,6 @@ export default function PokemonDetailScreen() {
             <Typography style={styles.flavorText}>{pokemon.flavorText}</Typography>
           ) : null}
 
-          {pokemon.evolutionChain.length > 1 ? (
-            <>
-              <Typography style={styles.sectionTitle}>Evolution</Typography>
-              <EvolutionChain
-                evolutionChain={pokemon.evolutionChain}
-                currentId={numericId}
-                typeColor={pokemon.typeColor}
-              />
-            </>
-          ) : null}
-
-          <Typography style={styles.sectionTitle}>Base Stats</Typography>
-          <View style={styles.statsList}>
-            {pokemon.stats.map((stat) => (
-              <StatBar key={stat.name} stat={stat} typeColor={pokemon.typeColor} />
-            ))}
-          </View>
-
           <View style={styles.statsGrid}>
             <StatCard
               icon={<Ionicons name="scale-outline" size={16} color={Colors.text} />}
@@ -178,6 +160,24 @@ export default function PokemonDetailScreen() {
               value={pokemon.ability ?? '—'}
             />
           </View>
+
+          <Typography style={styles.sectionTitle}>Base Stats</Typography>
+          <View style={styles.statsList}>
+            {pokemon.stats.map((stat) => (
+              <StatBar key={stat.name} stat={stat} typeColor={pokemon.typeColor} />
+            ))}
+          </View>
+
+          {pokemon.evolutionChain.length > 1 ? (
+            <>
+              <Typography style={styles.sectionTitle}>Evolution</Typography>
+              <EvolutionChain
+                evolutionChain={pokemon.evolutionChain}
+                currentId={numericId}
+                typeColor={pokemon.typeColor}
+              />
+            </>
+          ) : null}
         </ScrollView>
       </SafeAreaView>
     </View>

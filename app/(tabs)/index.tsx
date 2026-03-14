@@ -43,7 +43,7 @@ export default function HomeScreen() {
   } = usePokedex();
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: 'white' }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: Colors.background }]}>
       <TextBox
         autoCapitalize="none"
         autoCorrect={false}

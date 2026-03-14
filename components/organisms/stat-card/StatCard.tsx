@@ -24,7 +24,7 @@ export function StatCard({ icon, label, value }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    width: '46%',
+    width: '48%',
     gap: 6,
   },
   header: {

@@ -184,11 +184,17 @@ export const GET_POKEMON_BY_TYPE_AND_REGION = `
 `;
 
 export const GET_ITEMS = `
-  query GetItems($limit: Int!, $offset: Int!) {
+  query GetItems($limit: Int!, $offset: Int!, $pockets: [String!]!, $search: String!) {
     pokemon_v2_item(
       limit: $limit
       offset: $offset
       order_by: { id: asc }
+      where: {
+        _and: [
+          { pokemon_v2_itemcategory: { pokemon_v2_itempocket: { name: { _in: $pockets } } } }
+          { pokemon_v2_itemnames: { language_id: { _eq: 9 }, name: { _ilike: $search } } }
+        ]
+      }
     ) {
       id
       name

@@ -114,10 +114,12 @@ export async function searchPokemon(query: string): Promise<PokemonListItem[]> {
   );
   return data.pokemon_v2_pokemon.map((p) => ({ id: p.id, name: p.name }));
 }
-export async function fetchItems(offset: number): Promise<ItemListPage> {
+export async function fetchItems(offset: number, pockets: string[], search: string): Promise<ItemListPage> {
   const data = await gqlQuery<{ pokemon_v2_item: GqlItem[] }>(GET_ITEMS, {
     limit: PAGE_SIZE,
     offset,
+    pockets,
+    search,
   });
   const results = data.pokemon_v2_item.map(normalizeItem);
   return { results, hasMore: results.length === PAGE_SIZE };
