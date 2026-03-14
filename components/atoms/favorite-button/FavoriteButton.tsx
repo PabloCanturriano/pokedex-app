@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { memo } from 'react';
 import { Pressable, StyleSheet, type ViewStyle } from 'react-native';
 
 import { useFavoritesStore } from '@/store/useFavoritesStore';
@@ -12,7 +13,7 @@ type Props = {
    style?: ViewStyle;
 };
 
-export function FavoriteButton({ id, name, style }: Props) {
+export const FavoriteButton = memo(function FavoriteButton({ id, name, style }: Props) {
    const toggle = useFavoritesStore((s) => s.toggle);
    const isFavorite = useFavoritesStore((s) => s.isFavorite(id));
 
@@ -31,7 +32,7 @@ export function FavoriteButton({ id, name, style }: Props) {
          />
       </Pressable>
    );
-}
+});
 
 const styles = StyleSheet.create({
    button: {

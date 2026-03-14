@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 
 import { Typography } from '@/components/atoms/typography';
 import { Colors } from '@/constants/theme';
@@ -16,18 +18,28 @@ const STAT_LABELS: Record<string, string> = {
 type Props = {
    stat: { name: string; value: number };
    typeColor: string;
+   index?: number;
 };
 
-export function StatBar({ stat, typeColor }: Props) {
+export function StatBar({ stat, typeColor, index = 0 }: Props) {
    const fillPercent = Math.min(stat.value / STAT_MAX, 1);
+   const animatedFill = useSharedValue(0);
+
+   useEffect(() => {
+      animatedFill.value = 0;
+      animatedFill.value = withDelay(index * 80, withTiming(fillPercent, { duration: 700 }));
+   }, [fillPercent, index, animatedFill]);
+
+   const fillStyle = useAnimatedStyle(() => ({ flex: animatedFill.value }));
+   const emptyStyle = useAnimatedStyle(() => ({ flex: Math.max(1 - animatedFill.value, 0) }));
 
    return (
       <View style={styles.row}>
          <Typography style={styles.label}>{STAT_LABELS[stat.name] ?? stat.name}</Typography>
          <Typography style={styles.value}>{stat.value}</Typography>
          <View style={[styles.track, { backgroundColor: '#F0F0F0' }]}>
-            <View style={[styles.fill, { backgroundColor: typeColor, flex: fillPercent }]} />
-            <View style={{ flex: 1 - fillPercent }} />
+            <Animated.View style={[styles.fill, { backgroundColor: typeColor }, fillStyle]} />
+            <Animated.View style={emptyStyle} />
          </View>
       </View>
    );

@@ -1,18 +1,22 @@
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
-
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-
+import { useCallback } from 'react';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Typography } from '@/components/atoms/typography';
+import type { PokemonListItem } from '@/api/pokemon/types';
 import { MagikarpEmptyState } from '@/components/atoms/magikarp-empty-state';
 import { TextBox } from '@/components/atoms/textbox';
+import { Typography } from '@/components/atoms/typography';
 import { DrawerSelect } from '@/components/molecules/drawer-select';
 import { PokemonCard } from '@/components/molecules/pokemon-card';
 import { REGION_OPTIONS, SORT_OPTIONS } from '@/constants/pokemon';
 import { Colors } from '@/constants/theme';
 import { usePokedex } from '@/hooks/usePokedex';
+
+function Separator() {
+   return <View style={styles.separator} />;
+}
 
 export default function HomeScreen() {
    const router = useRouter();
@@ -30,6 +34,7 @@ export default function HomeScreen() {
       pokemons,
       typeOptions,
       isLoading,
+      isError,
       isFetchingNextPage,
       hasNextPage,
       fetchNextPage,
@@ -41,6 +46,53 @@ export default function HomeScreen() {
       isFavoritesMode,
       isSearching,
    } = usePokedex();
+
+   const renderItem = useCallback(
+      ({ item }: { item: PokemonListItem }) => (
+         <Pressable
+            onPress={() => router.push({ pathname: '/pokemon/[id]', params: { id: item.id } })}
+         >
+            <PokemonCard id={item.id} name={item.name} />
+         </Pressable>
+      ),
+      [router]
+   );
+
+   const onEndReached = useCallback(() => {
+      if (!isSearching && !isFavoritesMode && !isFiltered && hasNextPage && !isFetchingNextPage) {
+         fetchNextPage();
+      }
+   }, [isSearching, isFavoritesMode, isFiltered, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+   const emptyFallback = showSearchEmpty ? (
+      <>
+         <MagikarpEmptyState />
+         <View style={styles.emptyTextContainer}>
+            <Typography type="defaultSemiBold" style={styles.emptyText}>
+               No Pokémon found for &quot;{debouncedQuery}&quot;
+            </Typography>
+            <Typography style={styles.emptyText}>Try a partial name, e.g. &quot;char&quot;</Typography>
+         </View>
+      </>
+   ) : isFavoritesMode && totalFavorites === 0 ? (
+      <>
+         <MagikarpEmptyState />
+         <View style={styles.emptyTextContainer}>
+            <Typography type="subtitle" style={styles.emptyText}>
+               You don&apos;t have your favorite Pokémon :(
+            </Typography>
+            <Typography style={styles.emptyText}>
+               Click the heart icon on your favorite Pokémon and they will appear here.
+            </Typography>
+         </View>
+      </>
+   ) : (
+      <MagikarpEmptyState
+         message={
+            isFavoritesMode ? 'No favorites match your current filters' : 'No Pokémon found'
+         }
+      />
+   );
 
    return (
       <SafeAreaView style={[styles.container, { backgroundColor: Colors.background }]}>
@@ -101,68 +153,24 @@ export default function HomeScreen() {
 
          {isLoading ? (
             <ActivityIndicator style={styles.loader} />
-         ) : showSearchEmpty ? (
+         ) : isError ? (
             <View style={styles.emptyState}>
-               <MagikarpEmptyState />
-               <View style={styles.emptyTextContainer}>
-                  <Typography type="defaultSemiBold" style={styles.emptyText}>
-                     No Pokémon found for &quot;{debouncedQuery}&quot;
-                  </Typography>
-                  <Typography style={styles.emptyText}>
-                     Try a partial name, e.g. &quot;char&quot;
-                  </Typography>
-               </View>
+               <MagikarpEmptyState message="Something went wrong. Please try again." />
             </View>
-         ) : showEmpty ? (
-            <View style={styles.emptyState}>
-               <MagikarpEmptyState />
-               {isFavoritesMode && totalFavorites === 0 ? (
-                  <View style={styles.emptyTextContainer}>
-                     <Typography type="subtitle" style={styles.emptyText}>
-                        You don&apos;t have your favorite Pokémon :(
-                     </Typography>
-                     <Typography style={styles.emptyText}>
-                        Click the heart icon on your favorite Pokémon and they will appear here.
-                     </Typography>
-                  </View>
-               ) : (
-                  <Typography type="defaultSemiBold" style={styles.emptyText}>
-                     {isFavoritesMode
-                        ? 'No favorites match your current filters'
-                        : 'No Pokémon found'}
-                  </Typography>
-               )}
-            </View>
+         ) : showEmpty || showSearchEmpty ? (
+            <View style={styles.emptyState}>{emptyFallback}</View>
          ) : (
             <FlatList
                data={pokemons}
                keyExtractor={(item) => String(item.id)}
                contentContainerStyle={styles.list}
-               ItemSeparatorComponent={() => <View style={styles.separator} />}
-               onEndReached={() => {
-                  if (
-                     !isSearching &&
-                     !isFavoritesMode &&
-                     !isFiltered &&
-                     hasNextPage &&
-                     !isFetchingNextPage
-                  ) {
-                     fetchNextPage();
-                  }
-               }}
+               ItemSeparatorComponent={Separator}
+               onEndReached={onEndReached}
                onEndReachedThreshold={0.4}
                ListFooterComponent={
                   isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null
                }
-               renderItem={({ item }) => (
-                  <Pressable
-                     onPress={() =>
-                        router.push({ pathname: '/pokemon/[id]', params: { id: item.id } })
-                     }
-                  >
-                     <PokemonCard id={item.id} name={item.name} />
-                  </Pressable>
-               )}
+               renderItem={renderItem}
             />
          )}
       </SafeAreaView>

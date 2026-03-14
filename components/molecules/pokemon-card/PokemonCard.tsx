@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { memo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Typography } from '@/components/atoms/typography';
@@ -15,7 +16,7 @@ type Props = {
    name: string;
 };
 
-export function PokemonCard({ id, name }: Props) {
+export const PokemonCard = memo(function PokemonCard({ id, name }: Props) {
    const { data: pokemon } = usePokemon(id);
 
    return (
@@ -45,7 +46,7 @@ export function PokemonCard({ id, name }: Props) {
          <FavoriteButton id={id} name={name} style={styles.favBtn} />
       </View>
    );
-}
+});
 
 const styles = StyleSheet.create({
    card: {

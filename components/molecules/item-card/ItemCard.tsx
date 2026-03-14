@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { memo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Typography } from '@/components/atoms/typography';
@@ -8,7 +9,7 @@ type Props = {
    item: Item;
 };
 
-export function ItemCard({ item }: Props) {
+export const ItemCard = memo(function ItemCard({ item }: Props) {
    return (
       <View style={styles.card}>
          <Image source={{ uri: item.spriteUrl }} style={styles.sprite} contentFit="contain" />
@@ -23,7 +24,7 @@ export function ItemCard({ item }: Props) {
          )}
       </View>
    );
-}
+});
 
 const styles = StyleSheet.create({
    card: {

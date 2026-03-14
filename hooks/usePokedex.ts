@@ -49,6 +49,18 @@ export function usePokedex() {
    const { data: typeOptions = POKEMON_TYPE_OPTIONS } = usePokemonTypes();
    const totalFavorites = useFavoritesStore((s) => s.items.length);
 
+   const isError = isFavoritesMode
+      ? favoritesQuery.isError
+      : isSearching
+        ? searchQuery.isError
+        : hasTypeFilter && hasRegionFilter
+          ? typeAndRegionQuery.isError
+          : hasRegionFilter
+            ? regionQuery.isError
+            : hasTypeFilter
+              ? typeQuery.isError
+              : listQuery.isError;
+
    const isLoading = isFavoritesMode
       ? favoritesQuery.isLoading
       : isSearching
@@ -112,6 +124,7 @@ export function usePokedex() {
       showFavorites,
       setShowFavorites,
       // computed data
+      isError,
       pokemons,
       typeOptions,
       isLoading,
