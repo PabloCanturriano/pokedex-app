@@ -19,272 +19,272 @@ const HEADER_HEIGHT = 300;
 const SPRITE_SIZE = 200;
 
 export default function PokemonDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const numericId = Number(id);
-  const router = useRouter();
-  const insets = useSafeAreaInsets();
-  const { data: pokemon, isPending, isError } = usePokemonDetail(numericId);
-  const safePokemon = pokemon!;
-  const [isShiny, setIsShiny] = useState(false);
+   const { id } = useLocalSearchParams<{ id: string }>();
+   const numericId = Number(id);
+   const router = useRouter();
+   const insets = useSafeAreaInsets();
+   const { data: pokemon, isPending, isError } = usePokemonDetail(numericId);
+   const safePokemon = pokemon!;
+   const [isShiny, setIsShiny] = useState(false);
 
-  return (
-    <AsyncView
-      isPending={isPending}
-      isError={isError || !pokemon}
-      errorFallback={
-        <View style={[styles.loadingContainer, { backgroundColor: Colors.background }]}>
-          <Pressable onPress={() => router.back()} style={styles.errorBack}>
-            <Ionicons name="chevron-back" size={28} color={Colors.text} />
-          </Pressable>
-          <Typography>Failed to load Pokémon data.</Typography>
-        </View>
-      }
-    >
-      <View style={[styles.container, { backgroundColor: Colors.background }]}>
-        <View style={[styles.header, { backgroundColor: safePokemon.typeColor }]}>
-          <View style={[styles.actions, { top: insets.top }]}>
-            <Pressable
-              onPress={() => router.back()}
-              hitSlop={12}
-              accessibilityLabel="Go back"
-              accessibilityRole="button"
-            >
-              <Ionicons name="chevron-back" size={28} color="#fff" />
-            </Pressable>
-            <View style={styles.actionsRight}>
-              {safePokemon.shinyUrl && (
-                <Pressable
-                  onPress={() => setIsShiny((v) => !v)}
-                  hitSlop={12}
-                  accessibilityLabel={isShiny ? 'Show normal sprite' : 'Show shiny sprite'}
-                  accessibilityRole="button"
-                >
-                  <Ionicons
-                    name={isShiny ? 'sparkles' : 'sparkles-outline'}
-                    size={24}
-                    color="#fff"
+   return (
+      <AsyncView
+         isPending={isPending}
+         isError={isError || !pokemon}
+         errorFallback={
+            <View style={[styles.loadingContainer, { backgroundColor: Colors.background }]}>
+               <Pressable onPress={() => router.back()} style={styles.errorBack}>
+                  <Ionicons name="chevron-back" size={28} color={Colors.text} />
+               </Pressable>
+               <Typography>Failed to load Pokémon data.</Typography>
+            </View>
+         }
+      >
+         <View style={[styles.container, { backgroundColor: Colors.background }]}>
+            <View style={[styles.header, { backgroundColor: safePokemon.typeColor }]}>
+               <View style={[styles.actions, { top: insets.top }]}>
+                  <Pressable
+                     onPress={() => router.back()}
+                     hitSlop={12}
+                     accessibilityLabel="Go back"
+                     accessibilityRole="button"
+                  >
+                     <Ionicons name="chevron-back" size={28} color="#fff" />
+                  </Pressable>
+                  <View style={styles.actionsRight}>
+                     {safePokemon.shinyUrl && (
+                        <Pressable
+                           onPress={() => setIsShiny((v) => !v)}
+                           hitSlop={12}
+                           accessibilityLabel={isShiny ? 'Show normal sprite' : 'Show shiny sprite'}
+                           accessibilityRole="button"
+                        >
+                           <Ionicons
+                              name={isShiny ? 'sparkles' : 'sparkles-outline'}
+                              size={24}
+                              color="#fff"
+                           />
+                        </Pressable>
+                     )}
+                     <FavoriteButton id={safePokemon.id} name={safePokemon.name} />
+                  </View>
+               </View>
+
+               <View style={styles.blob} />
+
+               {(isShiny ? safePokemon.shinyUrl : safePokemon.spriteUrl) && (
+                  <Image
+                     source={{ uri: (isShiny ? safePokemon.shinyUrl : safePokemon.spriteUrl)! }}
+                     style={styles.sprite}
+                     contentFit="contain"
                   />
-                </Pressable>
-              )}
-              <FavoriteButton id={safePokemon.id} name={safePokemon.name} />
-            </View>
-          </View>
-
-          <View style={styles.blob} />
-
-          {(isShiny ? safePokemon.shinyUrl : safePokemon.spriteUrl) && (
-            <Image
-              source={{ uri: (isShiny ? safePokemon.shinyUrl : safePokemon.spriteUrl)! }}
-              style={styles.sprite}
-              contentFit="contain"
-            />
-          )}
-        </View>
-
-        <SafeAreaView style={styles.scrollView} edges={['bottom']}>
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.content}
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.nameRow}>
-              <Pressable
-                onPress={() =>
-                  router.replace({
-                    pathname: '/pokemon/[id]',
-                    params: { id: numericId - 1, direction: 'prev' },
-                  })
-                }
-                disabled={numericId <= 1}
-                hitSlop={12}
-                accessibilityLabel="Previous Pokémon"
-              >
-                <Ionicons
-                  name="chevron-back-circle-outline"
-                  size={28}
-                  color={numericId <= 1 ? '#ccc' : Colors.text}
-                />
-              </Pressable>
-              <Typography style={styles.name}>{safePokemon.displayName}</Typography>
-              <Pressable
-                onPress={() =>
-                  router.replace({
-                    pathname: '/pokemon/[id]',
-                    params: { id: numericId + 1, direction: 'next' },
-                  })
-                }
-                disabled={numericId >= 1025}
-                hitSlop={12}
-                accessibilityLabel="Next Pokémon"
-              >
-                <Ionicons
-                  name="chevron-forward-circle-outline"
-                  size={28}
-                  color={numericId >= 1025 ? '#ccc' : Colors.text}
-                />
-              </Pressable>
+               )}
             </View>
 
-            <Typography style={styles.number}>N°{safePokemon.number}</Typography>
+            <SafeAreaView style={styles.scrollView} edges={['bottom']}>
+               <ScrollView
+                  style={styles.scrollView}
+                  contentContainerStyle={styles.content}
+                  showsVerticalScrollIndicator={false}
+               >
+                  <View style={styles.nameRow}>
+                     <Pressable
+                        onPress={() =>
+                           router.replace({
+                              pathname: '/pokemon/[id]',
+                              params: { id: numericId - 1, direction: 'prev' },
+                           })
+                        }
+                        disabled={numericId <= 1}
+                        hitSlop={12}
+                        accessibilityLabel="Previous Pokémon"
+                     >
+                        <Ionicons
+                           name="chevron-back-circle-outline"
+                           size={28}
+                           color={numericId <= 1 ? '#ccc' : Colors.text}
+                        />
+                     </Pressable>
+                     <Typography style={styles.name}>{safePokemon.displayName}</Typography>
+                     <Pressable
+                        onPress={() =>
+                           router.replace({
+                              pathname: '/pokemon/[id]',
+                              params: { id: numericId + 1, direction: 'next' },
+                           })
+                        }
+                        disabled={numericId >= 1025}
+                        hitSlop={12}
+                        accessibilityLabel="Next Pokémon"
+                     >
+                        <Ionicons
+                           name="chevron-forward-circle-outline"
+                           size={28}
+                           color={numericId >= 1025 ? '#ccc' : Colors.text}
+                        />
+                     </Pressable>
+                  </View>
 
-            <View style={styles.typesRow}>
-              {safePokemon.types.map(({ type }) => (
-                <PokemonTypeBadge key={type.name} typeName={type.name} width={100} />
-              ))}
-            </View>
+                  <Typography style={styles.number}>N°{safePokemon.number}</Typography>
 
-            {safePokemon.flavorText ? (
-              <Typography style={styles.flavorText}>{safePokemon.flavorText}</Typography>
-            ) : null}
+                  <View style={styles.typesRow}>
+                     {safePokemon.types.map(({ type }) => (
+                        <PokemonTypeBadge key={type.name} typeName={type.name} width={100} />
+                     ))}
+                  </View>
 
-            <View style={styles.statsGrid}>
-              <StatCard
-                icon={<Ionicons name="scale-outline" size={16} color={Colors.text} />}
-                label="WEIGHT"
-                value={`${safePokemon.weightKg} kg`}
-              />
-              <StatCard
-                icon={<Ionicons name="resize-outline" size={16} color={Colors.text} />}
-                label="HEIGHT"
-                value={`${safePokemon.heightM} m`}
-              />
-              <StatCard
-                icon={<Ionicons name="grid-outline" size={16} color={Colors.text} />}
-                label="CATEGORY"
-                value={safePokemon.category ?? '—'}
-              />
-              <StatCard
-                icon={<Ionicons name="flash-outline" size={16} color={Colors.text} />}
-                label="ABILITY"
-                value={safePokemon.ability ?? '—'}
-              />
-            </View>
+                  {safePokemon.flavorText ? (
+                     <Typography style={styles.flavorText}>{safePokemon.flavorText}</Typography>
+                  ) : null}
 
-            <Typography style={styles.sectionTitle}>Base Stats</Typography>
-            <View style={styles.statsList}>
-              {safePokemon.stats.map((stat) => (
-                <StatBar key={stat.name} stat={stat} typeColor={safePokemon.typeColor} />
-              ))}
-            </View>
+                  <View style={styles.statsGrid}>
+                     <StatCard
+                        icon={<Ionicons name="scale-outline" size={16} color={Colors.text} />}
+                        label="WEIGHT"
+                        value={`${safePokemon.weightKg} kg`}
+                     />
+                     <StatCard
+                        icon={<Ionicons name="resize-outline" size={16} color={Colors.text} />}
+                        label="HEIGHT"
+                        value={`${safePokemon.heightM} m`}
+                     />
+                     <StatCard
+                        icon={<Ionicons name="grid-outline" size={16} color={Colors.text} />}
+                        label="CATEGORY"
+                        value={safePokemon.category ?? '—'}
+                     />
+                     <StatCard
+                        icon={<Ionicons name="flash-outline" size={16} color={Colors.text} />}
+                        label="ABILITY"
+                        value={safePokemon.ability ?? '—'}
+                     />
+                  </View>
 
-            {safePokemon.evolutionChain.length > 1 ? (
-              <>
-                <Typography style={styles.sectionTitle}>Evolution</Typography>
-                <EvolutionChain
-                  evolutionChain={safePokemon.evolutionChain}
-                  currentId={numericId}
-                  typeColor={safePokemon.typeColor}
-                />
-              </>
-            ) : null}
-          </ScrollView>
-        </SafeAreaView>
-      </View>
-    </AsyncView>
-  );
+                  <Typography style={styles.sectionTitle}>Base Stats</Typography>
+                  <View style={styles.statsList}>
+                     {safePokemon.stats.map((stat) => (
+                        <StatBar key={stat.name} stat={stat} typeColor={safePokemon.typeColor} />
+                     ))}
+                  </View>
+
+                  {safePokemon.evolutionChain.length > 1 ? (
+                     <>
+                        <Typography style={styles.sectionTitle}>Evolution</Typography>
+                        <EvolutionChain
+                           evolutionChain={safePokemon.evolutionChain}
+                           currentId={numericId}
+                           typeColor={safePokemon.typeColor}
+                        />
+                     </>
+                  ) : null}
+               </ScrollView>
+            </SafeAreaView>
+         </View>
+      </AsyncView>
+   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  header: {
-    height: HEADER_HEIGHT,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    overflow: 'hidden',
-  },
-  actions: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    zIndex: 10,
-  },
-  actionsRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  blob: {
-    position: 'absolute',
-    bottom: -60,
-    width: 260,
-    height: 220,
-    backgroundColor: '#fff',
-    borderRadius: 9999,
-    opacity: 0.25,
-  },
-  sprite: {
-    width: SPRITE_SIZE,
-    height: SPRITE_SIZE,
-    zIndex: 5,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  content: {
-    paddingHorizontal: 20,
-    paddingTop: 28,
-    gap: 12,
-  },
-  nameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 8,
-  },
-  name: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 34,
-    fontWeight: '700',
-    paddingTop: 22,
-  },
-  number: {
-    fontSize: 16,
-    fontWeight: '600',
-    opacity: 0.6,
-  },
-  typesRow: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 4,
-  },
-  flavorText: {
-    fontSize: 15,
-    lineHeight: 22,
-    marginTop: 8,
-    opacity: 0.85,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    marginTop: 8,
-  },
-  statsList: {
-    gap: 10,
-    marginTop: 4,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    marginTop: 8,
-  },
-  errorBack: {
-    position: 'absolute',
-    top: 60,
-    left: 20,
-  },
+   container: {
+      flex: 1,
+   },
+   loadingContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+   },
+   header: {
+      height: HEADER_HEIGHT,
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      overflow: 'hidden',
+   },
+   actions: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+      paddingTop: 12,
+      zIndex: 10,
+   },
+   actionsRight: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+   },
+   blob: {
+      position: 'absolute',
+      bottom: -60,
+      width: 260,
+      height: 220,
+      backgroundColor: '#fff',
+      borderRadius: 9999,
+      opacity: 0.25,
+   },
+   sprite: {
+      width: SPRITE_SIZE,
+      height: SPRITE_SIZE,
+      zIndex: 5,
+   },
+   scrollView: {
+      flex: 1,
+   },
+   content: {
+      paddingHorizontal: 20,
+      paddingTop: 28,
+      gap: 12,
+   },
+   nameRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: 8,
+   },
+   name: {
+      flex: 1,
+      textAlign: 'center',
+      fontSize: 34,
+      fontWeight: '700',
+      paddingTop: 22,
+   },
+   number: {
+      fontSize: 16,
+      fontWeight: '600',
+      opacity: 0.6,
+   },
+   typesRow: {
+      flexDirection: 'row',
+      gap: 8,
+      marginTop: 4,
+   },
+   flavorText: {
+      fontSize: 15,
+      lineHeight: 22,
+      marginTop: 8,
+      opacity: 0.85,
+   },
+   sectionTitle: {
+      fontSize: 16,
+      fontWeight: '700',
+      marginTop: 8,
+   },
+   statsList: {
+      gap: 10,
+      marginTop: 4,
+   },
+   statsGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 12,
+      marginTop: 8,
+   },
+   errorBack: {
+      position: 'absolute',
+      top: 60,
+      left: 20,
+   },
 });

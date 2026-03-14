@@ -10,35 +10,42 @@ import { Colors } from '@/constants/theme';
 import { useItems } from '@/hooks/useItems';
 
 export default function ItemsScreen() {
-  const { activeTab, query, setQuery, activePockets, activeColor, search, handleTabChange } = useItems();
+   const { activeTab, query, setQuery, activePockets, activeColor, search, handleTabChange } =
+      useItems();
 
-  return (
-    <SafeAreaView style={[styles.container, { backgroundColor: Colors.background }]}>
-      <Typography style={styles.title}>Items</Typography>
-      <TabBar tabs={ITEM_TABS} activeTab={activeTab} onTabChange={handleTabChange} />
-      <TextBox
-        autoCapitalize="none"
-        autoCorrect={false}
-        placeholder="Search items"
-        returnKeyType="search"
-        value={query}
-        onChangeText={setQuery}
-      />
-      <ItemList key={activeTab} pockets={activePockets} search={search} query={query} color={activeColor} />
-    </SafeAreaView>
-  );
+   return (
+      <SafeAreaView style={[styles.container, { backgroundColor: Colors.background }]}>
+         <Typography style={styles.title}>Items</Typography>
+         <TabBar tabs={ITEM_TABS} activeTab={activeTab} onTabChange={handleTabChange} />
+         <TextBox
+            autoCapitalize="none"
+            autoCorrect={false}
+            placeholder="Search items"
+            returnKeyType="search"
+            value={query}
+            onChangeText={setQuery}
+         />
+         <ItemList
+            key={activeTab}
+            pockets={activePockets}
+            search={search}
+            query={query}
+            color={activeColor}
+         />
+      </SafeAreaView>
+   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    gap: 16,
-  },
-  title: {
-    paddingTop: 12,
-    fontSize: 32,
-    fontWeight: '700',
-  },
+   container: {
+      flex: 1,
+      paddingHorizontal: 16,
+      paddingTop: 16,
+      gap: 16,
+   },
+   title: {
+      paddingTop: 12,
+      fontSize: 32,
+      fontWeight: '700',
+   },
 });
