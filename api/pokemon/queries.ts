@@ -59,3 +59,36 @@ export const SEARCH_POKEMON = `
     }
   }
 `;
+
+export const GET_FAVORITES = `
+  query GetFavorites($ids: [Int!]!, $orderBy: [pokemon_v2_pokemon_order_by!]!) {
+    pokemon_v2_pokemon(
+      where: {
+        id: { _in: $ids }
+        is_default: { _eq: true }
+      }
+      order_by: $orderBy
+    ) {
+      id
+      name
+    }
+  }
+`;
+
+export const GET_FAVORITES_BY_TYPE = `
+  query GetFavoritesByType($ids: [Int!]!, $type: String!, $orderBy: [pokemon_v2_pokemon_order_by!]!) {
+    pokemon_v2_pokemon(
+      where: {
+        id: { _in: $ids }
+        is_default: { _eq: true }
+        pokemon_v2_pokemontypes: {
+          pokemon_v2_type: { name: { _eq: $type } }
+        }
+      }
+      order_by: $orderBy
+    ) {
+      id
+      name
+    }
+  }
+`;

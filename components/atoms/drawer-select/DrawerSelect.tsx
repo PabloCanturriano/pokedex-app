@@ -106,7 +106,7 @@ export function DrawerSelect<T extends string = string>({
                   <Text
                     style={[
                       styles.optionText,
-                      { color: option.textColor ?? (option.color ? '#FFFFFF' : pillTextColor) },
+                      { color: option.textColor ?? (option.color ? '#FFFFFF' : defaultPillTextColor) },
                     ]}
                   >
                     {option.label}
