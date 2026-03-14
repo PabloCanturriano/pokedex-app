@@ -1,50 +1,61 @@
-# Welcome to your Expo app 👋
+# Pokédex App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A full-featured Pokédex mobile app built with React Native and Expo, consuming the [PokéAPI GraphQL endpoint](https://beta.pokeapi.co/graphql/v1beta).
 
-## Get started
+<!-- Add demo GIF here -->
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## Features
 
-2. Start the app
+- **Pokédex** — Browse all 1025 Pokémon with infinite scroll, search, type filter, region filter, and sort options
+- **Favorites** — Mark Pokémon as favorites, persisted locally with Zustand + AsyncStorage
+- **Pokémon detail** — Type-colored header, official artwork, shiny toggle, base stats with animated bars, evolution chain, and Pokédex entry
+- **Items** — Browse items by category (Pokéballs, Berries, TMs, Training), with server-side search
+- **Item detail** — Sprite, buy/sell price, flavor text, and effect description
 
-   ```bash
-   npx expo start
-   ```
+## Tech Stack
 
-In the output, you'll find options to open the app in a
+| Area | Choice |
+|---|---|
+| Framework | [Expo](https://expo.dev) (managed workflow) |
+| Routing | [Expo Router](https://expo.github.io/router/) (file-based) |
+| Data fetching | [TanStack React Query v5](https://tanstack.com/query) with infinite scroll |
+| API | [PokéAPI GraphQL](https://beta.pokeapi.co/graphql/v1beta) |
+| State management | [Zustand](https://zustand-demo.pmnd.rs/) with AsyncStorage persistence |
+| Animations | [React Native Reanimated v3](https://docs.swmansion.com/react-native-reanimated/) |
+| Component architecture | Atomic Design (atoms → molecules → organisms) |
+| Testing | Jest + React Native Testing Library |
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Getting Started
 
 ```bash
-npm run reset-project
+cp .env.example .env
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Then open the app in an iOS simulator, Android emulator, or on device via Expo Go.
 
-## Learn more
+## Running Tests
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+npm test
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Project Structure
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```
+app/              # Expo Router screens (file-based routing)
+  (tabs)/         # Bottom tab screens
+  pokemon/[id]    # Pokémon detail
+  items/[id]      # Item detail
+components/
+  atoms/          # Base building blocks (Typography, TextBox, ...)
+  molecules/      # Composed components (PokemonCard, TabBar, ...)
+  organisms/      # Feature-level components (ItemList, StatBar, ...)
+api/              # GraphQL queries, fetchers, and normalizers
+hooks/            # Custom hooks (usePokedex, useItems, useDebounce, ...)
+store/            # Zustand stores
+constants/        # Types, theme, and filter options
+```

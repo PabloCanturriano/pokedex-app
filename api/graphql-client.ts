@@ -1,7 +1,11 @@
-const GRAPHQL_URL = 'https://beta.pokeapi.co/graphql/v1beta';
+const GRAPHQL_URL = process.env.EXPO_PUBLIC_GRAPHQL_URL;
+
+if (!GRAPHQL_URL) {
+   throw new Error('EXPO_PUBLIC_GRAPHQL_URL is not defined. Check your .env file.');
+}
 
 export async function gqlQuery<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
-   const response = await fetch(GRAPHQL_URL, {
+   const response = await fetch(GRAPHQL_URL as string, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query, variables }),
