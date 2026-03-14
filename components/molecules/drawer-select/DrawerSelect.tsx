@@ -28,13 +28,11 @@ export function DrawerSelect<T extends string = string>({
   const [open, setOpen] = useState(false);
 
   const drawerBackground = useThemeColor({}, 'background');
-  // Inverted: pill background = text color (dark on light, light on dark)
   const defaultPillBackground = useThemeColor({}, 'text');
   const defaultPillTextColor = useThemeColor({}, 'background');
 
   const selected = options.find((o) => o.value === value) ?? options[0];
 
-  // Use the selected option's type color when available
   const pillBackground = selected.color ?? defaultPillBackground;
   const pillTextColor = selected.textColor ?? (selected.color ? '#FFFFFF' : defaultPillTextColor);
   const iconName = icon ?? 'swap-vertical';
@@ -48,7 +46,6 @@ export function DrawerSelect<T extends string = string>({
 
   const panGesture = Gesture.Pan()
     .onUpdate((e) => {
-      // Only allow dragging downward
       translateY.value = Math.max(0, e.translationY);
     })
     .onEnd((e) => {
@@ -97,17 +94,11 @@ export function DrawerSelect<T extends string = string>({
                 )}
               </View>
             </GestureDetector>
-            <ScrollView
-              contentContainerStyle={styles.list}
-              showsVerticalScrollIndicator={false}
-            >
+            <ScrollView contentContainerStyle={styles.list} showsVerticalScrollIndicator={false}>
               {options.map((option) => (
                 <Pressable
                   key={option.value}
-                  style={[
-                    styles.option,
-                    { backgroundColor: option.color ?? defaultPillBackground },
-                  ]}
+                  style={[styles.option, { backgroundColor: option.color ?? defaultPillBackground }]}
                   onPress={() => {
                     onChange(option.value);
                     close();

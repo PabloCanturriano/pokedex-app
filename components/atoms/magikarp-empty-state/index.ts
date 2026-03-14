@@ -1,0 +1,1 @@
+export { MagikarpEmptyState } from './MagikarpEmptyState';

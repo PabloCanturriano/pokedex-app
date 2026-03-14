@@ -1,5 +1,5 @@
-import {Asset} from 'expo-asset';
-import {SvgUri} from 'react-native-svg';
+import { Asset } from 'expo-asset';
+import { SvgUri } from 'react-native-svg';
 
 const BADGE_URIS: Record<string, string> = {
   bug: Asset.fromModule(require('@/assets/svg/pokemon-type-badge/type-bug.svg')).uri,
@@ -35,4 +35,3 @@ export function PokemonTypeBadge({ typeName, width = 86 }: Props) {
   if (!uri) return null;
   return <SvgUri uri={uri} width={width} height={Math.round(width * BADGE_ASPECT_RATIO)} />;
 }
-

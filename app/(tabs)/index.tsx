@@ -7,12 +7,12 @@ import { Asset } from 'expo-asset';
 import { SvgUri } from 'react-native-svg';
 
 import type { PokemonListItem } from '@/api/pokemon/types';
-import { DrawerSelect } from '@/components/atoms/drawer-select';
-import { PokemonCard } from '@/components/atoms/pokemon-card';
+import { MagikarpEmptyState } from '@/components/atoms/magikarp-empty-state';
 import { TextBox } from '@/components/atoms/textbox';
 import { ThemedSafeAreaView } from '@/components/atoms/themed-safe-area-view';
 import { ThemedText } from '@/components/atoms/themed-text';
-import { MagikarpEmptyState } from '@/components/icons/MagikarpEmptyState';
+import { DrawerSelect } from '@/components/molecules/drawer-select';
+import { PokemonCard } from '@/components/molecules/pokemon-card';
 import {
     POKEMON_TYPE_OPTIONS,
     type PokemonType,
