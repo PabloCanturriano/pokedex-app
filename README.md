@@ -2,7 +2,38 @@
 
 A full-featured Pokédex mobile app built with React Native and Expo, consuming the [PokéAPI GraphQL endpoint](https://beta.pokeapi.co/graphql/v1beta).
 
-<!-- Add demo GIF here -->
+---
+
+## Screenshots
+
+<p style="text-align: center">
+  <img src="assets/images/demo/main-screen.png" width="30%" alt="Main Pokédex screen" />
+  <img src="assets/images/demo/pokemon-details-screen.png" width="30%" alt="Pokémon detail screen" />
+  <img src="assets/images/demo/pokeballs-screen.png" width="30%" alt="Items screen" />
+</p>
+
+---
+
+## Demo
+
+<table>
+  <tr>
+    <td style="text-align: center"><b>Search</b></td>
+    <td style="text-align: center"><b>Filter & navigate</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/gifs/demo/search-ezgif.com-video-to-gif-converter.gif" width="100%" alt="Search demo" /></td>
+    <td><img src="assets/gifs/demo/filter-and-go-to-pokemon-detail.gif" width="100%" alt="Filter and navigate demo" /></td>
+  </tr>
+  <tr>
+    <td style="text-align: center"><b>Infinite scroll</b></td>
+    <td style="text-align: center"><b>Detail navigation</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/gifs/demo/scroll-and-go-to-pokemon-detail.gif" width="100%" alt="Infinite scroll demo" /></td>
+    <td><img src="assets/gifs/demo/navigation-between-pokemons-in-detail-page.gif" width="100%" alt="Detail navigation demo" /></td>
+  </tr>
+</table>
 
 ---
 
@@ -24,6 +55,7 @@ A full-featured Pokédex mobile app built with React Native and Expo, consuming 
 | API | [PokéAPI GraphQL](https://beta.pokeapi.co/graphql/v1beta) |
 | State management | [Zustand](https://zustand-demo.pmnd.rs/) with AsyncStorage persistence |
 | Animations | [React Native Reanimated v3](https://docs.swmansion.com/react-native-reanimated/) |
+| Internationalisation | [i18next](https://www.i18next.com/) + react-i18next |
 | Component architecture | Atomic Design (atoms → molecules → organisms) |
 | Testing | Jest + React Native Testing Library |
 
@@ -37,11 +69,20 @@ npx expo start
 
 Then open the app in an iOS simulator, Android emulator, or on device via Expo Go.
 
+## Internationalisation
+
+All UI strings live in [`locales/en.json`](locales/en.json), loaded via a dedicated i18next instance (`i18n/index.ts`). Adding a new language requires only a new locale file and an extra entry in the `resources` map — no component changes needed.
+
 ## Running Tests
 
 ```bash
 npm test
 ```
+
+The test suite covers:
+- **Normalizers** — data mapping, fallbacks, and markup stripping for both Pokémon and items
+- **Custom hooks** — `useDebounce`, `useItems` (tab/search state), `usePokemonList`, `useItemsList`
+- **Components** — `Typography` variants, `TabBar` interaction and accessibility state
 
 ## Project Structure
 
