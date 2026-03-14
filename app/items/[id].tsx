@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AsyncView } from '@/components/atoms/async-view';
 import { Typography } from '@/components/atoms/typography';
 import { StatCard } from '@/components/organisms/stat-card';
 import { Colors } from '@/constants/theme';
@@ -17,29 +18,23 @@ export default function ItemDetailScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { data: item, isPending, isError } = useItemDetail(Number(id));
+  const safeItem = item!;
 
   const headerColor = color ?? Colors.tint;
 
-  if (isPending) {
-    return (
-      <View style={[styles.loadingContainer, { backgroundColor: Colors.background }]}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  if (isError || !item) {
-    return (
-      <View style={[styles.loadingContainer, { backgroundColor: Colors.background }]}>
-        <Pressable onPress={() => router.back()} style={styles.errorBack}>
-          <Ionicons name="chevron-back" size={28} color={Colors.text} />
-        </Pressable>
-        <Typography>Failed to load item data.</Typography>
-      </View>
-    );
-  }
-
   return (
+    <AsyncView
+      isPending={isPending}
+      isError={isError || !item}
+      errorFallback={
+        <View style={[styles.loadingContainer, { backgroundColor: Colors.background }]}>
+          <Pressable onPress={() => router.back()} style={styles.errorBack}>
+            <Ionicons name="chevron-back" size={28} color={Colors.text} />
+          </Pressable>
+          <Typography>Failed to load item data.</Typography>
+        </View>
+      }
+    >
     <View style={[styles.container, { backgroundColor: Colors.background }]}>
       <View style={[styles.header, { backgroundColor: headerColor }]}>
         <View style={[styles.actions, { top: insets.top }]}>
@@ -55,7 +50,7 @@ export default function ItemDetailScreen() {
 
         <View style={styles.blob} />
 
-        <Image source={{ uri: item.spriteUrl }} style={styles.sprite} contentFit="contain" />
+        <Image source={{ uri: safeItem.spriteUrl }} style={styles.sprite} contentFit="contain" />
       </View>
 
       <SafeAreaView style={styles.scrollView} edges={['bottom']}>
@@ -64,42 +59,43 @@ export default function ItemDetailScreen() {
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
-          <Typography style={styles.name}>{item.displayName}</Typography>
-          <Typography style={styles.category}>{item.category.replace(/-/g, ' ')}</Typography>
+          <Typography style={styles.name}>{safeItem.displayName}</Typography>
+          <Typography style={styles.category}>{safeItem.category.replace(/-/g, ' ')}</Typography>
 
           <View style={styles.statsGrid}>
             <StatCard
               icon={<Ionicons name="cart-outline" size={16} color={Colors.text} />}
               label="BUY"
-              value={item.cost > 0 ? `₽${item.cost.toLocaleString()}` : '—'}
+              value={safeItem.cost > 0 ? `₽${safeItem.cost.toLocaleString()}` : '—'}
             />
             <StatCard
               icon={<Ionicons name="cash-outline" size={16} color={Colors.text} />}
               label="SELL"
-              value={item.sellPrice > 0 ? `₽${item.sellPrice.toLocaleString()}` : '—'}
+              value={safeItem.sellPrice > 0 ? `₽${safeItem.sellPrice.toLocaleString()}` : '—'}
             />
           </View>
 
-          {item.flavorText ? (
-            <Typography style={styles.flavorText}>{item.flavorText}</Typography>
+          {safeItem.flavorText ? (
+            <Typography style={styles.flavorText}>{safeItem.flavorText}</Typography>
           ) : null}
 
-          {item.shortEffect ? (
+          {safeItem.shortEffect ? (
             <>
               <Typography style={styles.sectionTitle}>Effect</Typography>
-              <Typography style={styles.sectionBody}>{item.shortEffect}</Typography>
+              <Typography style={styles.sectionBody}>{safeItem.shortEffect}</Typography>
             </>
           ) : null}
 
-          {item.effect && item.effect !== item.shortEffect ? (
+          {safeItem.effect && safeItem.effect !== safeItem.shortEffect ? (
             <>
               <Typography style={styles.sectionTitle}>Details</Typography>
-              <Typography style={styles.sectionBody}>{item.effect}</Typography>
+              <Typography style={styles.sectionBody}>{safeItem.effect}</Typography>
             </>
           ) : null}
         </ScrollView>
       </SafeAreaView>
     </View>
+    </AsyncView>
   );
 }
 
