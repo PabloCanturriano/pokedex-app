@@ -9,7 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { Colors } from '@/constants/theme';
 
 import { styles } from './styles';
 import type { DrawerSelectProps } from './types';
@@ -27,14 +27,10 @@ export function DrawerSelect<T extends string = string>({
 }: DrawerSelectProps<T>) {
   const [open, setOpen] = useState(false);
 
-  const drawerBackground = useThemeColor({}, 'background');
-  const defaultPillBackground = useThemeColor({}, 'text');
-  const defaultPillTextColor = useThemeColor({}, 'background');
-
   const selected = options.find((o) => o.value === value) ?? options[0];
 
-  const pillBackground = selected.color ?? defaultPillBackground;
-  const pillTextColor = selected.textColor ?? (selected.color ? '#FFFFFF' : defaultPillTextColor);
+  const pillBackground = selected.color ?? Colors.text;
+  const pillTextColor = selected.textColor ?? (selected.color ? '#FFFFFF' : Colors.background);
   const iconName = icon ?? 'swap-vertical';
 
   const translateY = useSharedValue(0);
@@ -85,12 +81,12 @@ export function DrawerSelect<T extends string = string>({
       <Modal visible={open} transparent animationType="slide" onRequestClose={close}>
         <View style={styles.modalContainer}>
           <Pressable style={styles.backdrop} onPress={close} />
-          <Animated.View style={[styles.drawer, { backgroundColor: drawerBackground }, animatedStyle]}>
+          <Animated.View style={[styles.drawer, { backgroundColor: Colors.background }, animatedStyle]}>
             <GestureDetector gesture={panGesture}>
               <View style={styles.dragArea}>
                 <View style={styles.handle} />
                 {title && (
-                  <Text style={[styles.title, { color: defaultPillBackground }]}>{title}</Text>
+                  <Text style={[styles.title, { color: Colors.text }]}>{title}</Text>
                 )}
               </View>
             </GestureDetector>
@@ -98,7 +94,7 @@ export function DrawerSelect<T extends string = string>({
               {options.map((option) => (
                 <Pressable
                   key={option.value}
-                  style={[styles.option, { backgroundColor: option.color ?? defaultPillBackground }]}
+                  style={[styles.option, { backgroundColor: option.color ?? Colors.text }]}
                   onPress={() => {
                     onChange(option.value);
                     close();
@@ -110,7 +106,7 @@ export function DrawerSelect<T extends string = string>({
                   <Text
                     style={[
                       styles.optionText,
-                      { color: option.textColor ?? (option.color ? '#FFFFFF' : defaultPillTextColor) },
+                      { color: option.textColor ?? (option.color ? '#FFFFFF' : Colors.background) },
                     ]}
                   >
                     {option.label}

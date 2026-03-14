@@ -5,14 +5,15 @@ import { useRouter } from 'expo-router';
 import { Asset } from 'expo-asset';
 import { SvgUri } from 'react-native-svg';
 
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { Typography } from '@/components/atoms/typography';
 import { MagikarpEmptyState } from '@/components/atoms/magikarp-empty-state';
 import { TextBox } from '@/components/atoms/textbox';
-import { ThemedSafeAreaView } from '@/components/atoms/themed-safe-area-view';
-import { ThemedText } from '@/components/atoms/themed-text';
 import { DrawerSelect } from '@/components/molecules/drawer-select';
 import { PokemonCard } from '@/components/molecules/pokemon-card';
 import { REGION_OPTIONS, SORT_OPTIONS } from '@/constants/pokemon';
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { Colors } from '@/constants/theme';
 import { usePokedex } from '@/hooks/usePokedex';
 
 const favCheckedUri = Asset.fromModule(require('@/assets/svg/fav-checked.svg')).uri;
@@ -41,10 +42,8 @@ export default function HomeScreen() {
     isSearching,
   } = usePokedex();
 
-  const pillBackground = useThemeColor({}, 'text');
-
   return (
-    <ThemedSafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: 'white' }]}>
       <TextBox
         autoCapitalize="none"
         autoCorrect={false}
@@ -83,7 +82,7 @@ export default function HomeScreen() {
         </View>
         <View style={styles.iconItem}>
           <Pressable
-            style={[styles.heartPill, { backgroundColor: showFavorites ? '#FD525C' : pillBackground }]}
+            style={[styles.heartPill, { backgroundColor: showFavorites ? '#FD525C' : Colors.text }]}
             onPress={() => setShowFavorites((prev) => !prev)}
             accessibilityLabel={showFavorites ? 'Show all Pokémon' : 'Show favorites'}
             accessibilityRole="button"
@@ -99,10 +98,10 @@ export default function HomeScreen() {
         <View style={styles.emptyState}>
           <MagikarpEmptyState />
           <View style={styles.emptyTextContainer}>
-            <ThemedText type="defaultSemiBold" style={styles.emptyText}>
+            <Typography type="defaultSemiBold" style={styles.emptyText}>
               No Pokémon found for &quot;{debouncedQuery}&quot;
-            </ThemedText>
-            <ThemedText style={styles.emptyText}>Try a partial name, e.g. &quot;char&quot;</ThemedText>
+            </Typography>
+            <Typography style={styles.emptyText}>Try a partial name, e.g. &quot;char&quot;</Typography>
           </View>
         </View>
       ) : showEmpty ? (
@@ -110,17 +109,17 @@ export default function HomeScreen() {
           <MagikarpEmptyState />
           {isFavoritesMode && totalFavorites === 0 ? (
             <View style={styles.emptyTextContainer}>
-              <ThemedText type="subtitle" style={styles.emptyText}>
+              <Typography type="subtitle" style={styles.emptyText}>
                 You don&apos;t have your favorite Pokémon :(
-              </ThemedText>
-              <ThemedText style={styles.emptyText}>
+              </Typography>
+              <Typography style={styles.emptyText}>
                 Click the heart icon on your favorite Pokémon and they will appear here.
-              </ThemedText>
+              </Typography>
             </View>
           ) : (
-            <ThemedText type="defaultSemiBold" style={styles.emptyText}>
+            <Typography type="defaultSemiBold" style={styles.emptyText}>
               {isFavoritesMode ? 'No favorites match your current filters' : 'No Pokémon found'}
-            </ThemedText>
+            </Typography>
           )}
         </View>
       ) : (
@@ -145,7 +144,7 @@ export default function HomeScreen() {
           )}
         />
       )}
-    </ThemedSafeAreaView>
+    </SafeAreaView>
   );
 }
 

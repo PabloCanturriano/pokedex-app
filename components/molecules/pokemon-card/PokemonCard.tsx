@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/components/atoms/themed-text';
+import { Typography } from '@/components/atoms/typography';
 import { FavoriteButton } from '@/components/atoms/favorite-button';
 import { PokemonCardBackground } from '@/components/molecules/pokemon-card-background';
 import { PokemonTypeBadge } from '@/components/molecules/pokemon-type-badge';
@@ -21,8 +21,8 @@ export function PokemonCard({ id, name }: Props) {
   return (
     <View style={[styles.card, { backgroundColor: pokemon?.cardBackground ?? '#A0A29F40' }]}>
       <View style={styles.left}>
-        <ThemedText style={styles.number}>N°{pokemon?.number ?? String(id).padStart(3, '0')}</ThemedText>
-        <ThemedText style={styles.name}>{pokemon?.displayName ?? name}</ThemedText>
+        <Typography style={styles.number}>N°{pokemon?.number ?? String(id).padStart(3, '0')}</Typography>
+        <Typography style={styles.name}>{pokemon?.displayName ?? name}</Typography>
         <View style={styles.typesRow}>
           {pokemon?.types.map(({ type }) => (
             <PokemonTypeBadge key={type.name} typeName={type.name} />

@@ -3,8 +3,8 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
-import { ThemedText } from '@/components/atoms/themed-text';
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { Typography } from '@/components/atoms/typography';
+import { Colors } from '@/constants/theme';
 
 type EvolutionEntry = {
   id: number;
@@ -21,7 +21,6 @@ type Props = {
 export function EvolutionChain({ evolutionChain, currentId, typeColor }: Props) {
   const router = useRouter();
   const { width: windowWidth } = useWindowDimensions();
-  const iconColor = useThemeColor({}, 'text');
 
   const evolutionColumns = Math.max(1, Math.min(evolutionChain.length, 3));
   const stepWidth = (windowWidth - 40) / evolutionColumns;
@@ -58,10 +57,10 @@ export function EvolutionChain({ evolutionChain, currentId, typeColor }: Props) 
                 )}
               </View>
             </Pressable>
-            <ThemedText style={styles.name}>{evo.displayName}</ThemedText>
+            <Typography style={styles.name}>{evo.displayName}</Typography>
           </View>
           {index < evolutionChain.length - 1 ? (
-            <Ionicons name="chevron-forward" size={18} color={iconColor} />
+            <Ionicons name="chevron-forward" size={18} color={Colors.text} />
           ) : null}
         </View>
       ))}

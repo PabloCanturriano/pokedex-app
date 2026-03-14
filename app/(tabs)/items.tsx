@@ -1,23 +1,25 @@
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
-import { ThemedSafeAreaView } from '@/components/atoms/themed-safe-area-view';
-import { ThemedText } from '@/components/atoms/themed-text';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { Typography } from '@/components/atoms/typography';
 import { ItemCard } from '@/components/molecules/item-card';
 import { useItemsList } from '@/hooks/useItemsList';
 
 export default function ItemsScreen() {
-  const { data, isPending, isError, isFetchingNextPage, hasNextPage, fetchNextPage } = useItemsList();
+  const { data, isPending, isError, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useItemsList();
 
   const items = data?.pages.flatMap((p) => p.results) ?? [];
 
   return (
-    <ThemedSafeAreaView style={styles.container}>
-      <ThemedText style={styles.title}>Items</ThemedText>
+    <SafeAreaView style={[styles.container, { backgroundColor: 'white' }]}>
+      <Typography style={styles.title}>Items</Typography>
 
       {isPending ? (
         <ActivityIndicator style={styles.loader} />
       ) : isError ? (
-        <ThemedText style={styles.error}>Failed to load items.</ThemedText>
+        <Typography style={styles.error}>Failed to load items.</Typography>
       ) : (
         <FlatList
           data={items}
@@ -34,7 +36,7 @@ export default function ItemsScreen() {
           renderItem={({ item }) => <ItemCard item={item} />}
         />
       )}
-    </ThemedSafeAreaView>
+    </SafeAreaView>
   );
 }
 
@@ -46,6 +48,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   title: {
+    paddingTop: 12,
     fontSize: 32,
     fontWeight: '700',
   },
@@ -58,12 +61,12 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   list: {
-    paddingBottom: 24,
+    paddingBottom: 0,
   },
   separator: {
     height: 8,
   },
   footer: {
-    paddingVertical: 16,
+    paddingVertical: 2,
   },
 });

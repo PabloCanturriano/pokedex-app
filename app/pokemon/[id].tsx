@@ -5,13 +5,13 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Typography } from '@/components/atoms/typography';
 import { FavoriteButton } from '@/components/atoms/favorite-button';
-import { ThemedText } from '@/components/atoms/themed-text';
 import { PokemonTypeBadge } from '@/components/molecules/pokemon-type-badge';
 import { EvolutionChain } from '@/components/organisms/evolution-chain';
 import { StatBar } from '@/components/organisms/stat-bar';
 import { StatCard } from '@/components/organisms/stat-card';
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { Colors } from '@/constants/theme';
 import { usePokemonDetail } from '@/hooks/usePokemon';
 
 const HEADER_HEIGHT = 300;
@@ -25,12 +25,9 @@ export default function PokemonDetailScreen() {
   const { data: pokemon, isPending, isError } = usePokemonDetail(numericId);
   const [isShiny, setIsShiny] = useState(false);
 
-  const iconColor = useThemeColor({}, 'text');
-  const bgColor = useThemeColor({}, 'background');
-
   if (isPending) {
     return (
-      <View style={[styles.loadingContainer, { backgroundColor: bgColor }]}>
+      <View style={[styles.loadingContainer, { backgroundColor: Colors.background }]}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -38,17 +35,17 @@ export default function PokemonDetailScreen() {
 
   if (isError || !pokemon) {
     return (
-      <View style={[styles.loadingContainer, { backgroundColor: bgColor }]}>
+      <View style={[styles.loadingContainer, { backgroundColor: Colors.background }]}>
         <Pressable onPress={() => router.back()} style={styles.errorBack}>
-          <Ionicons name="chevron-back" size={28} color={iconColor} />
+          <Ionicons name="chevron-back" size={28} color={Colors.text} />
         </Pressable>
-        <ThemedText>Failed to load Pokémon data.</ThemedText>
+        <Typography>Failed to load Pokémon data.</Typography>
       </View>
     );
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: bgColor }]}>
+    <View style={[styles.container, { backgroundColor: Colors.background }]}>
       <View style={[styles.header, { backgroundColor: pokemon.typeColor }]}>
         <View style={[styles.actions, { top: insets.top }]}>
           <Pressable
@@ -106,10 +103,10 @@ export default function PokemonDetailScreen() {
               <Ionicons
                 name="chevron-back-circle-outline"
                 size={28}
-                color={numericId <= 1 ? '#ccc' : iconColor}
+                color={numericId <= 1 ? '#ccc' : Colors.text}
               />
             </Pressable>
-            <ThemedText style={styles.name}>{pokemon.displayName}</ThemedText>
+            <Typography style={styles.name}>{pokemon.displayName}</Typography>
             <Pressable
               onPress={() =>
                 router.replace({
@@ -124,12 +121,12 @@ export default function PokemonDetailScreen() {
               <Ionicons
                 name="chevron-forward-circle-outline"
                 size={28}
-                color={numericId >= 1025 ? '#ccc' : iconColor}
+                color={numericId >= 1025 ? '#ccc' : Colors.text}
               />
             </Pressable>
           </View>
 
-          <ThemedText style={styles.number}>N°{pokemon.number}</ThemedText>
+          <Typography style={styles.number}>N°{pokemon.number}</Typography>
 
           <View style={styles.typesRow}>
             {pokemon.types.map(({ type }) => (
@@ -138,12 +135,12 @@ export default function PokemonDetailScreen() {
           </View>
 
           {pokemon.flavorText ? (
-            <ThemedText style={styles.flavorText}>{pokemon.flavorText}</ThemedText>
+            <Typography style={styles.flavorText}>{pokemon.flavorText}</Typography>
           ) : null}
 
           {pokemon.evolutionChain.length > 1 ? (
             <>
-              <ThemedText style={styles.sectionTitle}>Evolution</ThemedText>
+              <Typography style={styles.sectionTitle}>Evolution</Typography>
               <EvolutionChain
                 evolutionChain={pokemon.evolutionChain}
                 currentId={numericId}
@@ -152,7 +149,7 @@ export default function PokemonDetailScreen() {
             </>
           ) : null}
 
-          <ThemedText style={styles.sectionTitle}>Base Stats</ThemedText>
+          <Typography style={styles.sectionTitle}>Base Stats</Typography>
           <View style={styles.statsList}>
             {pokemon.stats.map((stat) => (
               <StatBar key={stat.name} stat={stat} typeColor={pokemon.typeColor} />
@@ -161,22 +158,22 @@ export default function PokemonDetailScreen() {
 
           <View style={styles.statsGrid}>
             <StatCard
-              icon={<Ionicons name="scale-outline" size={16} color={iconColor} />}
+              icon={<Ionicons name="scale-outline" size={16} color={Colors.text} />}
               label="WEIGHT"
               value={`${pokemon.weightKg} kg`}
             />
             <StatCard
-              icon={<Ionicons name="resize-outline" size={16} color={iconColor} />}
+              icon={<Ionicons name="resize-outline" size={16} color={Colors.text} />}
               label="HEIGHT"
               value={`${pokemon.heightM} m`}
             />
             <StatCard
-              icon={<Ionicons name="grid-outline" size={16} color={iconColor} />}
+              icon={<Ionicons name="grid-outline" size={16} color={Colors.text} />}
               label="CATEGORY"
               value={pokemon.category ?? '—'}
             />
             <StatCard
-              icon={<Ionicons name="flash-outline" size={16} color={iconColor} />}
+              icon={<Ionicons name="flash-outline" size={16} color={Colors.text} />}
               label="ABILITY"
               value={pokemon.ability ?? '—'}
             />

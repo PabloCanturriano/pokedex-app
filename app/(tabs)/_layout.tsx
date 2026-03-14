@@ -4,15 +4,12 @@ import { HapticTab } from '@/components/atoms/haptic-tab';
 import { ItemsTabIcon } from '@/components/icons/ItemsTabIcon';
 import { PokedexTabIcon } from '@/components/icons/PokedexTabIcon';
 import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors.tint,
         headerShown: false,
         tabBarButton: HapticTab,
       }}

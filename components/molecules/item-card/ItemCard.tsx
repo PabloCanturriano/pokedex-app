@@ -1,8 +1,7 @@
 import { Image } from 'expo-image';
 import { StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/components/atoms/themed-text';
-import { ThemedView } from '@/components/atoms/themed-view';
+import { Typography } from '@/components/atoms/typography';
 import type { Item } from '@/api/pokemon/types';
 
 type Props = {
@@ -11,22 +10,18 @@ type Props = {
 
 export function ItemCard({ item }: Props) {
   return (
-    <ThemedView style={styles.card} lightColor="#F5F5F5" darkColor="#1E1F21">
-      <Image
-        source={{ uri: item.spriteUrl }}
-        style={styles.sprite}
-        contentFit="contain"
-      />
+    <View style={styles.card}>
+      <Image source={{ uri: item.spriteUrl }} style={styles.sprite} contentFit="contain" />
       <View style={styles.info}>
-        <ThemedText style={styles.name}>{item.displayName}</ThemedText>
-        <ThemedText style={styles.category}>{item.category}</ThemedText>
+        <Typography style={styles.name}>{item.displayName}</Typography>
+        <Typography style={styles.category}>{item.category}</Typography>
       </View>
       {item.cost > 0 && (
         <View style={styles.costBadge}>
-          <ThemedText style={styles.cost}>₽{item.cost.toLocaleString()}</ThemedText>
+          <Typography style={styles.cost}>₽{item.cost.toLocaleString()}</Typography>
         </View>
       )}
-    </ThemedView>
+    </View>
   );
 }
 
@@ -34,6 +29,7 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#F5F5F5',
     borderRadius: 16,
     paddingHorizontal: 16,
     paddingVertical: 12,

@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/components/atoms/themed-text';
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { Typography } from '@/components/atoms/typography';
+import { Colors } from '@/constants/theme';
 
 const STAT_MAX = 255;
 const STAT_LABELS: Record<string, string> = {
@@ -19,15 +19,13 @@ type Props = {
 };
 
 export function StatBar({ stat, typeColor }: Props) {
-  const trackColor = useThemeColor({ light: '#F0F0F0', dark: '#2A2A2A' }, 'background');
-  const textColor = useThemeColor({}, 'text');
   const fillPercent = Math.min(stat.value / STAT_MAX, 1);
 
   return (
     <View style={styles.row}>
-      <ThemedText style={styles.label}>{STAT_LABELS[stat.name] ?? stat.name}</ThemedText>
-      <ThemedText style={[styles.value, { color: textColor }]}>{stat.value}</ThemedText>
-      <View style={[styles.track, { backgroundColor: trackColor }]}>
+      <Typography style={styles.label}>{STAT_LABELS[stat.name] ?? stat.name}</Typography>
+      <Typography style={styles.value}>{stat.value}</Typography>
+      <View style={[styles.track, { backgroundColor: '#F0F0F0' }]}>
         <View style={[styles.fill, { backgroundColor: typeColor, flex: fillPercent }]} />
         <View style={{ flex: 1 - fillPercent }} />
       </View>
@@ -52,6 +50,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
     textAlign: 'right',
+    color: Colors.text,
   },
   track: {
     flex: 1,

@@ -1,7 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/components/atoms/themed-text';
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { Typography } from '@/components/atoms/typography';
 
 type Props = {
   icon: React.ReactNode;
@@ -10,17 +9,14 @@ type Props = {
 };
 
 export function StatCard({ icon, label, value }: Props) {
-  const cardBg = useThemeColor({ light: '#F5F5F5', dark: '#2A2A2A' }, 'background');
-  const textColor = useThemeColor({}, 'text');
-
   return (
     <View style={styles.card}>
       <View style={styles.header}>
         {icon}
-        <ThemedText style={styles.label}>{label}</ThemedText>
+        <Typography style={styles.label}>{label}</Typography>
       </View>
-      <View style={[styles.valueBox, { backgroundColor: cardBg }]}>
-        <ThemedText style={[styles.value, { color: textColor }]}>{value}</ThemedText>
+      <View style={styles.valueBox}>
+        <Typography style={styles.value}>{value}</Typography>
       </View>
     </View>
   );
@@ -43,6 +39,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   valueBox: {
+    backgroundColor: '#F5F5F5',
     borderRadius: 10,
     paddingVertical: 10,
     alignItems: 'center',
