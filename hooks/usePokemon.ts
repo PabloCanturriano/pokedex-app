@@ -1,8 +1,18 @@
-import {useQuery} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
-import {fetchPokemon, fetchPokemonDetail, fetchPokemonsByRegion, fetchPokemonsByType, fetchPokemonsByTypeAndRegion} from '@/api/pokemon/fetchers';
-import type {Pokemon, PokemonDetail, PokemonStat} from '@/api/pokemon/types';
-import {POKEMON_TYPE_COLORS, type SortOption} from '@/constants/pokemon';
+import {
+    fetchPokemon,
+    fetchPokemonDetail,
+    fetchPokemonsByRegion,
+    fetchPokemonsByType,
+    fetchPokemonsByTypeAndRegion
+} from '@/api/pokemon/fetchers';
+import type { EvolutionChainItem, Pokemon, PokemonDetail, PokemonStat } from '@/api/pokemon/types';
+import { POKEMON_TYPE_COLORS, type SortOption } from '@/constants/pokemon';
+
+export type EvolutionChainItemData = EvolutionChainItem & {
+  displayName: string;
+};
 
 export type PokemonCardData = Pokemon & {
   primaryType: string;
@@ -19,11 +29,17 @@ export type PokemonDetailData = {
   height: number;
   weight: number;
   types: { type: { name: string } }[];
-  sprites: { front_default: string | null; front_shiny: string | null; officialArtwork: string | null; officialArtworkShiny: string | null };
+  sprites: {
+    front_default: string | null;
+    front_shiny: string | null;
+    officialArtwork: string | null;
+    officialArtworkShiny: string | null;
+  };
   ability: string | null;
   category: string | null;
   flavorText: string | null;
   stats: PokemonStat[];
+  evolutionChain: EvolutionChainItemData[];
   primaryType: string;
   typeColor: string;
   displayName: string;
@@ -80,6 +96,10 @@ function toPokemonDetailData(pokemon: PokemonDetail): PokemonDetailData {
   const typeColor = POKEMON_TYPE_COLORS[primaryType]?.bg ?? '#A0A29F';
   return {
     ...pokemon,
+    evolutionChain: pokemon.evolutionChain.map((p) => ({
+      ...p,
+      displayName: p.name.charAt(0).toUpperCase() + p.name.slice(1),
+    })),
     primaryType,
     typeColor,
     displayName: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1),

@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/atoms/themed-text';
@@ -24,7 +24,13 @@ const STAT_LABELS: Record<string, string> = {
   speed: 'SPD',
 };
 
-function StatRow({ stat, typeColor }: { stat: { name: string; value: number }; typeColor: string }) {
+function StatRow({
+  stat,
+  typeColor,
+}: {
+  stat: { name: string; value: number };
+  typeColor: string;
+}) {
   const trackColor = useThemeColor({ light: '#F0F0F0', dark: '#2A2A2A' }, 'background');
   const textColor = useThemeColor({}, 'text');
   const fillPercent = Math.min(stat.value / STAT_MAX, 1);
@@ -63,12 +69,12 @@ export default function PokemonDetailScreen() {
   const numericId = Number(id);
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { width: windowWidth } = useWindowDimensions();
   const { data: pokemon, isPending, isError } = usePokemonDetail(numericId);
   const [isShiny, setIsShiny] = useState(false);
 
   const iconColor = useThemeColor({}, 'text');
   const bgColor = useThemeColor({}, 'background');
-
 
   if (isPending) {
     return (
@@ -88,6 +94,9 @@ export default function PokemonDetailScreen() {
       </View>
     );
   }
+
+  const evolutionColumns = Math.max(1, Math.min(pokemon.evolutionChain.length, 3));
+  const evolutionStepWidth = (windowWidth - 40) / evolutionColumns;
 
   return (
     <View style={[styles.container, { backgroundColor: bgColor }]}>
@@ -132,81 +141,139 @@ export default function PokemonDetailScreen() {
       </View>
 
       <SafeAreaView style={styles.scrollView} edges={['bottom']}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.nameRow}>
-          <Pressable
-            onPress={() =>
-              router.replace({ pathname: '/pokemon/[id]', params: { id: numericId - 1, direction: 'prev' } })
-            }
-            disabled={numericId <= 1}
-            hitSlop={12}
-            accessibilityLabel="Previous Pokémon"
-          >
-            <Ionicons name="chevron-back-circle-outline" size={28} color={numericId <= 1 ? '#ccc' : iconColor} />
-          </Pressable>
-          <ThemedText style={styles.name}>{pokemon.displayName}</ThemedText>
-          <Pressable
-            onPress={() =>
-              router.replace({ pathname: '/pokemon/[id]', params: { id: numericId + 1, direction: 'next' } })
-            }
-            disabled={numericId >= 1025}
-            hitSlop={12}
-            accessibilityLabel="Next Pokémon"
-          >
-            <Ionicons name="chevron-forward-circle-outline" size={28} color={numericId >= 1025 ? '#ccc' : iconColor} />
-          </Pressable>
-        </View>
-        <ThemedText style={styles.number}>N°{pokemon.number}</ThemedText>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.nameRow}>
+            <Pressable
+              onPress={() =>
+                router.replace({
+                  pathname: '/pokemon/[id]',
+                  params: { id: numericId - 1, direction: 'prev' },
+                })
+              }
+              disabled={numericId <= 1}
+              hitSlop={12}
+              accessibilityLabel="Previous Pokémon"
+            >
+              <Ionicons
+                name="chevron-back-circle-outline"
+                size={28}
+                color={numericId <= 1 ? '#ccc' : iconColor}
+              />
+            </Pressable>
+            <ThemedText style={styles.name}>{pokemon.displayName}</ThemedText>
+            <Pressable
+              onPress={() =>
+                router.replace({
+                  pathname: '/pokemon/[id]',
+                  params: { id: numericId + 1, direction: 'next' },
+                })
+              }
+              disabled={numericId >= 1025}
+              hitSlop={12}
+              accessibilityLabel="Next Pokémon"
+            >
+              <Ionicons
+                name="chevron-forward-circle-outline"
+                size={28}
+                color={numericId >= 1025 ? '#ccc' : iconColor}
+              />
+            </Pressable>
+          </View>
+          <ThemedText style={styles.number}>N°{pokemon.number}</ThemedText>
 
-        <View style={styles.typesRow}>
-          {pokemon?.types.map(({ type }) => (
-            <PokemonTypeBadge key={type.name} typeName={type.name} width={100} />
-          ))}
-        </View>
+          <View style={styles.typesRow}>
+            {pokemon?.types.map(({ type }) => (
+              <PokemonTypeBadge key={type.name} typeName={type.name} width={100} />
+            ))}
+          </View>
 
-        {pokemon?.flavorText ? (
-          <ThemedText style={styles.flavorText}>{pokemon.flavorText}</ThemedText>
-        ) : null}
+          {pokemon?.flavorText ? (
+            <ThemedText style={styles.flavorText}>{pokemon.flavorText}</ThemedText>
+          ) : null}
+
+          {pokemon.evolutionChain.length > 1 ? (
+            <>
+              <ThemedText style={styles.sectionTitle}>Evolution</ThemedText>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.evolutionRow}
+              >
+                {pokemon.evolutionChain.map((evo, index) => (
+                  <View key={evo.id} style={[styles.evolutionStep, { width: evolutionStepWidth }]}>
+                    <View style={styles.evolutionNode}>
+                      <Pressable
+                        onPress={() => {
+                          if (evo.id === numericId) return;
+                          const direction = evo.id < numericId ? 'prev' : 'next';
+                          router.replace({ pathname: '/pokemon/[id]', params: { id: evo.id, direction } });
+                        }}
+                        disabled={evo.id === numericId}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Go to ${evo.displayName}`}
+                      >
+                        <View
+                          style={[
+                            styles.evolutionSpriteBox,
+                            evo.id === numericId && { borderColor: pokemon.typeColor, borderWidth: 2 },
+                          ]}
+                        >
+                          {evo.spriteUrl ? (
+                            <Image
+                              source={{ uri: evo.spriteUrl }}
+                              style={styles.evolutionSprite}
+                              contentFit="contain"
+                            />
+                          ) : (
+                            <View style={styles.evolutionSprite} />
+                          )}
+                        </View>
+                      </Pressable>
+                      <ThemedText style={styles.evolutionName}>{evo.displayName}</ThemedText>
+                    </View>
+                    {index < pokemon.evolutionChain.length - 1 ? (
+                      <Ionicons name="chevron-forward" size={18} color={iconColor} />
+                    ) : null}
+                  </View>
+                ))}
+              </ScrollView>
+            </>
+          ) : null}
 
           <ThemedText style={styles.sectionTitle}>Base Stats</ThemedText>
           <View style={styles.statsList}>
-              {pokemon.stats.map((stat) => (
-                  <StatRow
-                      key={stat.name}
-                      stat={stat}
-                      typeColor={pokemon.typeColor}
-                  />
-              ))}
+            {pokemon.stats.map((stat) => (
+              <StatRow key={stat.name} stat={stat} typeColor={pokemon.typeColor} />
+            ))}
           </View>
 
-
-        <View style={styles.statsGrid}>
-          <StatCard
-            icon={<Ionicons name="scale-outline" size={16} color={iconColor} />}
-            label="WEIGHT"
-            value={`${pokemon.weightKg} kg`}
-          />
-          <StatCard
-            icon={<Ionicons name="resize-outline" size={16} color={iconColor} />}
-            label="HEIGHT"
-            value={`${pokemon.heightM} m`}
-          />
-          <StatCard
-            icon={<Ionicons name="grid-outline" size={16} color={iconColor} />}
-            label="CATEGORY"
-            value={pokemon?.category ?? '—'}
-          />
-          <StatCard
-            icon={<Ionicons name="flash-outline" size={16} color={iconColor} />}
-            label="ABILITY"
-            value={pokemon?.ability ?? '—'}
-          />
-        </View>
-      </ScrollView>
+          <View style={styles.statsGrid}>
+            <StatCard
+              icon={<Ionicons name="scale-outline" size={16} color={iconColor} />}
+              label="WEIGHT"
+              value={`${pokemon.weightKg} kg`}
+            />
+            <StatCard
+              icon={<Ionicons name="resize-outline" size={16} color={iconColor} />}
+              label="HEIGHT"
+              value={`${pokemon.heightM} m`}
+            />
+            <StatCard
+              icon={<Ionicons name="grid-outline" size={16} color={iconColor} />}
+              label="CATEGORY"
+              value={pokemon?.category ?? '—'}
+            />
+            <StatCard
+              icon={<Ionicons name="flash-outline" size={16} color={iconColor} />}
+              label="ABILITY"
+              value={pokemon?.ability ?? '—'}
+            />
+          </View>
+        </ScrollView>
       </SafeAreaView>
     </View>
   );
@@ -275,6 +342,40 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
     marginTop: 8,
+    opacity: 0.85,
+  },
+  evolutionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  evolutionStep: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  evolutionNode: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  evolutionSpriteBox: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    borderColor: 'rgba(0, 0, 0, 0.06)',
+    borderWidth: 1,
+  },
+  evolutionSprite: {
+    width: 46,
+    height: 46,
+  },
+  evolutionName: {
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: '600',
+    textAlign: 'center',
     opacity: 0.85,
   },
   statsGrid: {

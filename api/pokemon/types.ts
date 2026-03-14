@@ -22,17 +22,29 @@ export type PokemonStat = {
   value: number;
 };
 
+export type EvolutionChainItem = {
+  id: number;
+  name: string;
+  spriteUrl: string | null;
+};
+
 export type PokemonDetail = {
   id: number;
   name: string;
   height: number;
   weight: number;
   types: { type: { name: string } }[];
-  sprites: { front_default: string | null; front_shiny: string | null; officialArtwork: string | null; officialArtworkShiny: string | null };
+  sprites: {
+    front_default: string | null;
+    front_shiny: string | null;
+    officialArtwork: string | null;
+    officialArtworkShiny: string | null;
+  };
   ability: string | null;
   category: string | null;
   flavorText: string | null;
   stats: PokemonStat[];
+  evolutionChain: EvolutionChainItem[];
 };
 
 // ── Internal GQL raw shapes (used only in fetchers) ───────────────────────────
@@ -65,6 +77,16 @@ export type GqlPokemonDetail = {
   pokemon_v2_pokemonspecy: {
     pokemon_v2_pokemonspeciesnames: { genus: string }[];
     pokemon_v2_pokemonspeciesflavortexts: { flavor_text: string }[];
+    pokemon_v2_evolutionchain: {
+      pokemon_v2_pokemonspecies: {
+        id: number;
+        name: string;
+        pokemon_v2_pokemons: {
+          id: number;
+          pokemon_v2_pokemonsprites: { sprites: GqlSprites }[];
+        }[];
+      }[];
+    } | null;
   } | null;
 };
 
@@ -74,6 +96,22 @@ export function normalizePokemonDetail(raw: GqlPokemonDetail): PokemonDetail {
     abilityEntry?.pokemon_v2_ability.pokemon_v2_abilitynames[0]?.name ??
     abilityEntry?.pokemon_v2_ability.name ??
     null;
+
+  const evolutionChain =
+    raw.pokemon_v2_pokemonspecy?.pokemon_v2_evolutionchain?.pokemon_v2_pokemonspecies.map(
+      (species) => {
+        const pokemon = species.pokemon_v2_pokemons[0];
+        const sprites = pokemon?.pokemon_v2_pokemonsprites[0]?.sprites;
+        const spriteUrl =
+          sprites?.other?.['official-artwork']?.front_default ?? sprites?.front_default ?? null;
+
+        return {
+          id: pokemon?.id ?? species.id,
+          name: species.name,
+          spriteUrl,
+        };
+      }
+    ) ?? [];
 
   return {
     id: raw.id,
@@ -86,8 +124,11 @@ export function normalizePokemonDetail(raw: GqlPokemonDetail): PokemonDetail {
     sprites: {
       front_default: raw.pokemon_v2_pokemonsprites[0]?.sprites?.front_default ?? null,
       front_shiny: raw.pokemon_v2_pokemonsprites[0]?.sprites?.front_shiny ?? null,
-      officialArtwork: raw.pokemon_v2_pokemonsprites[0]?.sprites?.other?.['official-artwork']?.front_default ?? null,
-      officialArtworkShiny: raw.pokemon_v2_pokemonsprites[0]?.sprites?.other?.['official-artwork']?.front_shiny ?? null,
+      officialArtwork:
+        raw.pokemon_v2_pokemonsprites[0]?.sprites?.other?.['official-artwork']?.front_default ??
+        null,
+      officialArtworkShiny:
+        raw.pokemon_v2_pokemonsprites[0]?.sprites?.other?.['official-artwork']?.front_shiny ?? null,
     },
     ability,
     stats: raw.pokemon_v2_pokemonstats.map((s) => ({
@@ -96,7 +137,11 @@ export function normalizePokemonDetail(raw: GqlPokemonDetail): PokemonDetail {
     })),
     category: raw.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonspeciesnames[0]?.genus ?? null,
     flavorText:
-      raw.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonspeciesflavortexts[0]?.flavor_text?.replace(/[\n\f\r]/g, ' ') ?? null,
+      raw.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonspeciesflavortexts[0]?.flavor_text?.replace(
+        /[\n\f\r]/g,
+        ' '
+      ) ?? null,
+    evolutionChain,
   };
 }
 

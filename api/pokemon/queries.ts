@@ -148,6 +148,18 @@ export const GET_POKEMON_DETAIL = `
         ) {
           flavor_text
         }
+        pokemon_v2_evolutionchain {
+          pokemon_v2_pokemonspecies(order_by: { id: asc }) {
+            id
+            name
+            pokemon_v2_pokemons(where: { is_default: { _eq: true } }, limit: 1) {
+              id
+              pokemon_v2_pokemonsprites(limit: 1) {
+                sprites
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -170,4 +182,3 @@ export const GET_POKEMON_BY_TYPE_AND_REGION = `
     }
   }
 `;
-
