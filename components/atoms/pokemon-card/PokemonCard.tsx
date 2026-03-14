@@ -1,12 +1,11 @@
-import {Image} from 'expo-image';
-import {StyleSheet, View} from 'react-native';
+import { Image } from 'expo-image';
+import { StyleSheet, View } from 'react-native';
 
-import {ThemedText} from '@/components/atoms/themed-text';
-import {FavoriteButton} from '@/components/icons/FavoriteButton';
-import {PokemonCardBackground} from '@/components/icons/PokemonCardBackground';
-import {PokemonTypeBadge} from '@/components/icons/PokemonTypeBadge';
-import {POKEMON_TYPE_COLORS} from '@/constants/pokemon';
-import {usePokemon} from '@/hooks/usePokemon';
+import { ThemedText } from '@/components/atoms/themed-text';
+import { FavoriteButton } from '@/components/icons/FavoriteButton';
+import { PokemonCardBackground } from '@/components/icons/PokemonCardBackground';
+import { PokemonTypeBadge } from '@/components/icons/PokemonTypeBadge';
+import { usePokemon } from '@/hooks/usePokemon';
 
 const RIGHT_PANEL_WIDTH = 140;
 const SPRITE_SIZE = 101;
@@ -19,19 +18,11 @@ type Props = {
 export function PokemonCard({ id, name }: Props) {
   const { data: pokemon } = usePokemon(id);
 
-  const primaryType = pokemon?.types[0]?.type.name ?? 'normal';
-  const typeColor = POKEMON_TYPE_COLORS[primaryType]?.bg ?? '#A0A29F';
-  // 25% opacity tint of the type color as card background
-  const cardBackground = `${typeColor}40`;
-  const number = String(id).padStart(3, '0');
-  const displayName = name.charAt(0).toUpperCase() + name.slice(1);
-  const spriteUrl = pokemon?.sprites.front_default;
-
   return (
-    <View style={[styles.card, { backgroundColor: cardBackground }]}>
+    <View style={[styles.card, { backgroundColor: pokemon?.cardBackground ?? '#A0A29F40' }]}>
       <View style={styles.left}>
-        <ThemedText style={[styles.number]}>N°{number}</ThemedText>
-        <ThemedText style={styles.name}>{displayName}</ThemedText>
+        <ThemedText style={[styles.number]}>N°{pokemon?.number ?? String(id).padStart(3, '0')}</ThemedText>
+        <ThemedText style={styles.name}>{pokemon?.displayName ?? name}</ThemedText>
         <View style={styles.typesRow}>
           {pokemon?.types.map(({ type }) => (
             <PokemonTypeBadge key={type.name} typeName={type.name} />
@@ -40,9 +31,9 @@ export function PokemonCard({ id, name }: Props) {
       </View>
 
       <View style={[styles.right]}>
-        <PokemonCardBackground typeName={primaryType} />
-        {spriteUrl && (
-          <Image source={{ uri: spriteUrl }} style={styles.sprite} contentFit="contain" />
+        <PokemonCardBackground typeName={pokemon?.primaryType ?? 'normal'} />
+        {pokemon?.spriteUrl && (
+          <Image source={{ uri: pokemon.spriteUrl }} style={styles.sprite} contentFit="contain" />
         )}
       </View>
       <FavoriteButton id={id} name={name} style={styles.favBtn} />

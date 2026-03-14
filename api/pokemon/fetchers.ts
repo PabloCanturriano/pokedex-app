@@ -6,13 +6,17 @@ import {
     GET_POKEMON_BY_REGION,
     GET_POKEMON_BY_TYPE,
     GET_POKEMON_BY_TYPE_AND_REGION,
+    GET_POKEMON_DETAIL,
     GET_POKEMON_LIST,
     SEARCH_POKEMON,
 } from '@/api/pokemon/queries';
 import {
     type GqlPokemon,
+    type GqlPokemonDetail,
     normalizePokemon,
+    normalizePokemonDetail,
     type Pokemon,
+    type PokemonDetail,
     type PokemonListItem,
     type PokemonListPage,
 } from '@/api/pokemon/types';
@@ -48,6 +52,15 @@ export async function fetchPokemon(id: number): Promise<Pokemon> {
   );
   if (!data.pokemon_v2_pokemon_by_pk) throw new Error(`Pokémon #${id} not found`);
   return normalizePokemon(data.pokemon_v2_pokemon_by_pk);
+}
+
+export async function fetchPokemonDetail(id: number): Promise<PokemonDetail> {
+  const data = await gqlQuery<{ pokemon_v2_pokemon_by_pk: GqlPokemonDetail | null }>(
+    GET_POKEMON_DETAIL,
+    { id },
+  );
+  if (!data.pokemon_v2_pokemon_by_pk) throw new Error(`Pokémon #${id} not found`);
+  return normalizePokemonDetail(data.pokemon_v2_pokemon_by_pk);
 }
 
 export async function fetchPokemonsByType(type: string, sortBy: SortOption = 'number-asc'): Promise<PokemonListItem[]> {

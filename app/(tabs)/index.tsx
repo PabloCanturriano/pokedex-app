@@ -1,6 +1,8 @@
 import {useMemo, useState} from 'react';
 import {ActivityIndicator, FlatList, Pressable, StyleSheet, View} from 'react-native';
 
+import {useRouter} from 'expo-router';
+
 import {Asset} from 'expo-asset';
 import {SvgUri} from 'react-native-svg';
 
@@ -19,6 +21,7 @@ import {
     SORT_OPTIONS,
     type SortOption
 } from '@/constants/pokemon';
+
 import {useThemeColor} from '@/hooks/use-theme-color';
 import {useDebounce} from '@/hooks/useDebounce';
 import {useFavoritesList} from '@/hooks/useFavoritesList';
@@ -32,6 +35,7 @@ const favCheckedUri = Asset.fromModule(require('@/assets/svg/fav-checked.svg')).
 const favUncheckedUri = Asset.fromModule(require('@/assets/svg/fav_unchecked.svg')).uri;
 
 export default function HomeScreen() {
+  const router = useRouter();
   const [query, setQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<PokemonType>('all');
   const [regionFilter, setRegionFilter] = useState<Region>('all');
@@ -208,7 +212,11 @@ export default function HomeScreen() {
           ListFooterComponent={
             isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null
           }
-          renderItem={({item}) => <PokemonCard id={item.id} name={item.name} />}
+          renderItem={({item}) => (
+            <Pressable onPress={() => router.push({ pathname: '/pokemon/[id]' as any, params: { id: item.id } })}>
+              <PokemonCard id={item.id} name={item.name} />
+            </Pressable>
+          )}
         />
       )}
     </ThemedSafeAreaView>

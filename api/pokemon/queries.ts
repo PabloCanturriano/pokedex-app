@@ -108,6 +108,47 @@ export const GET_POKEMON_BY_REGION = `
   }
 `;
 
+export const GET_POKEMON_DETAIL = `
+  query GetPokemonDetail($id: Int!) {
+    pokemon_v2_pokemon_by_pk(id: $id) {
+      id
+      name
+      height
+      weight
+      pokemon_v2_pokemontypes {
+        pokemon_v2_type { name }
+      }
+      pokemon_v2_pokemonsprites {
+        sprites
+      }
+      pokemon_v2_pokemonabilities(
+        where: { is_hidden: { _eq: false } }
+        limit: 1
+        order_by: { slot: asc }
+      ) {
+        pokemon_v2_ability {
+          name
+          pokemon_v2_abilitynames(where: { language_id: { _eq: 9 } }, limit: 1) {
+            name
+          }
+        }
+      }
+      pokemon_v2_pokemonspecy {
+        pokemon_v2_pokemonspeciesnames(where: { language_id: { _eq: 9 } }, limit: 1) {
+          genus
+        }
+        pokemon_v2_pokemonspeciesflavortexts(
+          where: { language_id: { _eq: 9 } }
+          limit: 1
+          order_by: { version_id: asc }
+        ) {
+          flavor_text
+        }
+      }
+    }
+  }
+`;
+
 export const GET_POKEMON_BY_TYPE_AND_REGION = `
   query GetPokemonByTypeAndRegion($type: String!, $minId: Int!, $maxId: Int!, $orderBy: [pokemon_v2_pokemon_order_by!]!) {
     pokemon_v2_pokemon(
