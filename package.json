@@ -10,7 +10,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,json}\"",
-    "test": "jest",
+    "test": "jest --forceExit",
     "test:watch": "jest --watch"
   },
   "jest": {
