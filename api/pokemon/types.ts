@@ -64,6 +64,44 @@ export type ItemListPage = {
   hasMore: boolean;
 };
 
+export type ItemDetail = {
+  id: number;
+  name: string;
+  displayName: string;
+  cost: number;
+  sellPrice: number;
+  category: string;
+  flavorText: string | null;
+  shortEffect: string | null;
+  effect: string | null;
+  spriteUrl: string;
+};
+
+export type GqlItemDetail = {
+  id: number;
+  name: string;
+  cost: number;
+  pokemon_v2_itemnames: { name: string }[];
+  pokemon_v2_itemcategory: { name: string } | null;
+  pokemon_v2_itemflavortexts: { flavor_text: string }[];
+  pokemon_v2_itemeffecttexts: { short_effect: string; effect: string }[];
+};
+
+export function normalizeItemDetail(raw: GqlItemDetail): ItemDetail {
+  return {
+    id: raw.id,
+    name: raw.name,
+    displayName: raw.pokemon_v2_itemnames[0]?.name ?? raw.name,
+    cost: raw.cost,
+    sellPrice: Math.floor(raw.cost / 2),
+    category: raw.pokemon_v2_itemcategory?.name ?? 'unknown',
+    flavorText: raw.pokemon_v2_itemflavortexts[0]?.flavor_text?.replace(/[\n\f\r]/g, ' ') ?? null,
+    shortEffect: raw.pokemon_v2_itemeffecttexts[0]?.short_effect ?? null,
+    effect: raw.pokemon_v2_itemeffecttexts[0]?.effect ?? null,
+    spriteUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${raw.name}.png`,
+  };
+}
+
 export type GqlItem = {
   id: number;
   name: string;

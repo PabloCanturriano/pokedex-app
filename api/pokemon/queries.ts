@@ -183,6 +183,29 @@ export const GET_POKEMON_BY_TYPE_AND_REGION = `
   }
 `;
 
+export const GET_ITEM_DETAIL = `
+  query GetItemDetail($id: Int!) {
+    pokemon_v2_item_by_pk(id: $id) {
+      id
+      name
+      cost
+      pokemon_v2_itemnames(where: { language_id: { _eq: 9 } }, limit: 1) {
+        name
+      }
+      pokemon_v2_itemcategory {
+        name
+      }
+      pokemon_v2_itemflavortexts(where: { language_id: { _eq: 9 } }, limit: 1) {
+        flavor_text
+      }
+      pokemon_v2_itemeffecttexts(where: { language_id: { _eq: 9 } }, limit: 1) {
+        short_effect
+        effect
+      }
+    }
+  }
+`;
+
 export const GET_ITEMS = `
   query GetItems($limit: Int!, $offset: Int!, $pockets: [String!]!, $search: String!) {
     pokemon_v2_item(
