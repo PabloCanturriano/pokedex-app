@@ -17,6 +17,11 @@ export type Pokemon = {
   sprites: { front_default: string | null };
 };
 
+export type PokemonStat = {
+  name: string;
+  value: number;
+};
+
 export type PokemonDetail = {
   id: number;
   name: string;
@@ -27,6 +32,7 @@ export type PokemonDetail = {
   ability: string | null;
   category: string | null;
   flavorText: string | null;
+  stats: PokemonStat[];
 };
 
 // ── Internal GQL raw shapes (used only in fetchers) ───────────────────────────
@@ -50,6 +56,10 @@ export type GqlPokemonDetail = {
       name: string;
       pokemon_v2_abilitynames: { name: string }[];
     };
+  }[];
+  pokemon_v2_pokemonstats: {
+    base_stat: number;
+    pokemon_v2_stat: { name: string };
   }[];
   pokemon_v2_pokemonspecy: {
     pokemon_v2_pokemonspeciesnames: { genus: string }[];
@@ -78,6 +88,10 @@ export function normalizePokemonDetail(raw: GqlPokemonDetail): PokemonDetail {
         raw.pokemon_v2_pokemonsprites[0]?.sprites?.other?.['official-artwork']?.front_default ?? null,
     },
     ability,
+    stats: raw.pokemon_v2_pokemonstats.map((s) => ({
+      name: s.pokemon_v2_stat.name,
+      value: s.base_stat,
+    })),
     category: raw.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonspeciesnames[0]?.genus ?? null,
     flavorText:
       raw.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonspeciesflavortexts[0]?.flavor_text?.replace(/[\n\f\r]/g, ' ') ?? null,

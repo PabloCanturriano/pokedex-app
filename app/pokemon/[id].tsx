@@ -13,6 +13,33 @@ import {usePokemonDetail} from '@/hooks/usePokemon';
 const HEADER_HEIGHT = 300;
 const SPRITE_SIZE = 200;
 
+const STAT_MAX = 255;
+const STAT_LABELS: Record<string, string> = {
+  hp: 'HP',
+  attack: 'ATK',
+  defense: 'DEF',
+  'special-attack': 'SP.ATK',
+  'special-defense': 'SP.DEF',
+  speed: 'SPD',
+};
+
+function StatRow({ stat, typeColor }: { stat: { name: string; value: number }; typeColor: string }) {
+  const trackColor = useThemeColor({ light: '#F0F0F0', dark: '#2A2A2A' }, 'background');
+  const textColor = useThemeColor({}, 'text');
+  const fillPercent = Math.min(stat.value / STAT_MAX, 1);
+
+  return (
+    <View style={styles.statRow}>
+      <ThemedText style={styles.statRowLabel}>{STAT_LABELS[stat.name] ?? stat.name}</ThemedText>
+      <ThemedText style={[styles.statRowValue, { color: textColor }]}>{stat.value}</ThemedText>
+      <View style={[styles.statTrack, { backgroundColor: trackColor }]}>
+        <View style={[styles.statFill, { backgroundColor: typeColor, flex: fillPercent }]} />
+        <View style={{ flex: 1 - fillPercent }} />
+      </View>
+    </View>
+  );
+}
+
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   const cardBg = useThemeColor({ light: '#F5F5F5', dark: '#2A2A2A' }, 'background');
   const textColor = useThemeColor({}, 'text');
@@ -108,6 +135,18 @@ export default function PokemonDetailScreen() {
           <ThemedText style={styles.flavorText}>{pokemon.flavorText}</ThemedText>
         ) : null}
 
+          <ThemedText style={styles.sectionTitle}>Base Stats</ThemedText>
+          <View style={styles.statsList}>
+              {pokemon.stats.map((stat) => (
+                  <StatRow
+                      key={stat.name}
+                      stat={stat}
+                      typeColor={pokemon.typeColor}
+                  />
+              ))}
+          </View>
+
+
         <View style={styles.statsGrid}>
           <StatCard
             icon={<Ionicons name="scale-outline" size={16} color={iconColor} />}
@@ -175,7 +214,6 @@ const styles = StyleSheet.create({
   sprite: {
     width: SPRITE_SIZE,
     height: SPRITE_SIZE,
-    marginBottom: -20,
     zIndex: 5,
   },
   scrollView: {
@@ -241,5 +279,41 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 60,
     left: 20,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginTop: 8,
+  },
+  statsList: {
+    gap: 10,
+    marginTop: 4,
+  },
+  statRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  statRowLabel: {
+    width: 60,
+    fontSize: 12,
+    fontWeight: '600',
+    opacity: 0.5,
+  },
+  statRowValue: {
+    width: 32,
+    fontSize: 13,
+    fontWeight: '700',
+    textAlign: 'right',
+  },
+  statTrack: {
+    flex: 1,
+    height: 6,
+    borderRadius: 99,
+    flexDirection: 'row',
+    overflow: 'hidden',
+  },
+  statFill: {
+    borderRadius: 99,
   },
 });

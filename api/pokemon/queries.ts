@@ -133,6 +133,10 @@ export const GET_POKEMON_DETAIL = `
           }
         }
       }
+      pokemon_v2_pokemonstats {
+        base_stat
+        pokemon_v2_stat { name }
+      }
       pokemon_v2_pokemonspecy {
         pokemon_v2_pokemonspeciesnames(where: { language_id: { _eq: 9 } }, limit: 1) {
           genus

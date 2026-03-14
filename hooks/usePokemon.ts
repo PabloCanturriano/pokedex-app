@@ -1,7 +1,7 @@
 import {useQuery} from '@tanstack/react-query';
 
 import {fetchPokemon, fetchPokemonDetail, fetchPokemonsByRegion, fetchPokemonsByType, fetchPokemonsByTypeAndRegion} from '@/api/pokemon/fetchers';
-import type {Pokemon, PokemonDetail} from '@/api/pokemon/types';
+import type {Pokemon, PokemonDetail, PokemonStat} from '@/api/pokemon/types';
 import {POKEMON_TYPE_COLORS, type SortOption} from '@/constants/pokemon';
 
 export type PokemonCardData = Pokemon & {
@@ -13,7 +13,17 @@ export type PokemonCardData = Pokemon & {
   spriteUrl: string | null;
 };
 
-export type PokemonDetailData = PokemonDetail & {
+export type PokemonDetailData = {
+  id: number;
+  name: string;
+  height: number;
+  weight: number;
+  types: { type: { name: string } }[];
+  sprites: { front_default: string | null; officialArtwork: string | null };
+  ability: string | null;
+  category: string | null;
+  flavorText: string | null;
+  stats: PokemonStat[];
   primaryType: string;
   typeColor: string;
   displayName: string;
@@ -50,45 +60,49 @@ export function usePokemonsByTypeAndRegion(type: string, minId: number, maxId: n
   });
 }
 
+function toPokemonCardData(pokemon: Pokemon): PokemonCardData {
+  const primaryType = pokemon.types[0]?.type.name ?? 'normal';
+  const typeColor = POKEMON_TYPE_COLORS[primaryType]?.bg ?? '#A0A29F';
+  return {
+    ...pokemon,
+    primaryType,
+    typeColor,
+    cardBackground: `${typeColor}40`,
+    displayName: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1),
+    number: String(pokemon.id).padStart(3, '0'),
+    spriteUrl: pokemon.sprites.front_default,
+  };
+}
+
+function toPokemonDetailData(pokemon: PokemonDetail): PokemonDetailData {
+  const primaryType = pokemon.types[0]?.type.name ?? 'normal';
+  const typeColor = POKEMON_TYPE_COLORS[primaryType]?.bg ?? '#A0A29F';
+  return {
+    ...pokemon,
+    primaryType,
+    typeColor,
+    displayName: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1),
+    number: String(pokemon.id).padStart(3, '0'),
+    spriteUrl: pokemon.sprites.officialArtwork ?? pokemon.sprites.front_default,
+    weightKg: (pokemon.weight / 10).toFixed(1).replace('.', ','),
+    heightM: (pokemon.height / 10).toFixed(1).replace('.', ','),
+  };
+}
+
 export function usePokemon(id: number) {
-  return useQuery({
+  const query = useQuery({
     queryKey: ['pokemon', id],
     queryFn: () => fetchPokemon(id),
     staleTime: 1000 * 60 * 10,
-    select: (pokemon): PokemonCardData => {
-      const primaryType = pokemon.types[0]?.type.name ?? 'normal';
-      const typeColor = POKEMON_TYPE_COLORS[primaryType]?.bg ?? '#A0A29F';
-      return {
-        ...pokemon,
-        primaryType,
-        typeColor,
-        cardBackground: `${typeColor}40`,
-        displayName: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1),
-        number: String(pokemon.id).padStart(3, '0'),
-        spriteUrl: pokemon.sprites.front_default,
-      };
-    },
   });
+  return { ...query, data: query.data ? toPokemonCardData(query.data) : undefined };
 }
 
 export function usePokemonDetail(id: number) {
-  return useQuery({
+  const query = useQuery({
     queryKey: ['pokemon-detail', id],
     queryFn: () => fetchPokemonDetail(id),
     staleTime: 1000 * 60 * 10,
-    select: (pokemon): PokemonDetailData => {
-      const primaryType = pokemon.types[0]?.type.name ?? 'normal';
-      const typeColor = POKEMON_TYPE_COLORS[primaryType]?.bg ?? '#A0A29F';
-      return {
-        ...pokemon,
-        primaryType,
-        typeColor,
-        displayName: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1),
-        number: String(pokemon.id).padStart(3, '0'),
-        spriteUrl: pokemon.sprites.officialArtwork ?? pokemon.sprites.front_default,
-        weightKg: (pokemon.weight / 10).toFixed(1).replace('.', ','),
-        heightM: (pokemon.height / 10).toFixed(1).replace('.', ','),
-      };
-    },
   });
+  return { ...query, data: query.data ? toPokemonDetailData(query.data) : undefined };
 }
