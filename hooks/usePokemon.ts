@@ -19,7 +19,7 @@ export type PokemonDetailData = {
   height: number;
   weight: number;
   types: { type: { name: string } }[];
-  sprites: { front_default: string | null; officialArtwork: string | null };
+  sprites: { front_default: string | null; front_shiny: string | null; officialArtwork: string | null; officialArtworkShiny: string | null };
   ability: string | null;
   category: string | null;
   flavorText: string | null;
@@ -29,6 +29,7 @@ export type PokemonDetailData = {
   displayName: string;
   number: string;
   spriteUrl: string | null;
+  shinyUrl: string | null;
   weightKg: string;
   heightM: string;
 };
@@ -84,6 +85,7 @@ function toPokemonDetailData(pokemon: PokemonDetail): PokemonDetailData {
     displayName: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1),
     number: String(pokemon.id).padStart(3, '0'),
     spriteUrl: pokemon.sprites.officialArtwork ?? pokemon.sprites.front_default,
+    shinyUrl: pokemon.sprites.officialArtworkShiny ?? pokemon.sprites.front_shiny,
     weightKg: (pokemon.weight / 10).toFixed(1).replace('.', ','),
     heightM: (pokemon.height / 10).toFixed(1).replace('.', ','),
   };

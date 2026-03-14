@@ -1,18 +1,18 @@
-import {useMemo, useState} from 'react';
-import {ActivityIndicator, FlatList, Pressable, StyleSheet, View} from 'react-native';
+import { useMemo, useState } from 'react';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
 
-import {useRouter} from 'expo-router';
+import { useRouter } from 'expo-router';
 
-import {Asset} from 'expo-asset';
-import {SvgUri} from 'react-native-svg';
+import { Asset } from 'expo-asset';
+import { SvgUri } from 'react-native-svg';
 
-import type {PokemonListItem} from '@/api/pokemon/types';
-import {DrawerSelect} from '@/components/atoms/drawer-select';
-import {PokemonCard} from '@/components/atoms/pokemon-card';
-import {TextBox} from '@/components/atoms/textbox';
-import {ThemedSafeAreaView} from '@/components/atoms/themed-safe-area-view';
-import {ThemedText} from '@/components/atoms/themed-text';
-import {MagikarpEmptyState} from '@/components/icons/MagikarpEmptyState';
+import type { PokemonListItem } from '@/api/pokemon/types';
+import { DrawerSelect } from '@/components/atoms/drawer-select';
+import { PokemonCard } from '@/components/atoms/pokemon-card';
+import { TextBox } from '@/components/atoms/textbox';
+import { ThemedSafeAreaView } from '@/components/atoms/themed-safe-area-view';
+import { ThemedText } from '@/components/atoms/themed-text';
+import { MagikarpEmptyState } from '@/components/icons/MagikarpEmptyState';
 import {
     POKEMON_TYPE_OPTIONS,
     type PokemonType,
@@ -22,14 +22,14 @@ import {
     type SortOption
 } from '@/constants/pokemon';
 
-import {useThemeColor} from '@/hooks/use-theme-color';
-import {useDebounce} from '@/hooks/useDebounce';
-import {useFavoritesList} from '@/hooks/useFavoritesList';
-import {usePokemonsByRegion, usePokemonsByType, usePokemonsByTypeAndRegion} from '@/hooks/usePokemon';
-import {usePokemonList} from '@/hooks/usePokemonList';
-import {usePokemonSearch} from '@/hooks/usePokemonSearch';
-import {usePokemonTypes} from '@/hooks/usePokemonTypes';
-import {useFavoritesStore} from '@/store/useFavoritesStore';
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { useDebounce } from '@/hooks/useDebounce';
+import { useFavoritesList } from '@/hooks/useFavoritesList';
+import { usePokemonsByRegion, usePokemonsByType, usePokemonsByTypeAndRegion } from '@/hooks/usePokemon';
+import { usePokemonList } from '@/hooks/usePokemonList';
+import { usePokemonSearch } from '@/hooks/usePokemonSearch';
+import { usePokemonTypes } from '@/hooks/usePokemonTypes';
+import { useFavoritesStore } from '@/store/useFavoritesStore';
 
 const favCheckedUri = Asset.fromModule(require('@/assets/svg/fav-checked.svg')).uri;
 const favUncheckedUri = Asset.fromModule(require('@/assets/svg/fav_unchecked.svg')).uri;

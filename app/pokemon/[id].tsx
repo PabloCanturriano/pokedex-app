@@ -1,14 +1,15 @@
-import {Ionicons} from '@expo/vector-icons';
-import {Image} from 'expo-image';
-import {useLocalSearchParams, useRouter} from 'expo-router';
-import {ActivityIndicator, Pressable, ScrollView, StyleSheet, View} from 'react-native';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import {ThemedText} from '@/components/atoms/themed-text';
-import {FavoriteButton} from '@/components/icons/FavoriteButton';
-import {PokemonTypeBadge} from '@/components/icons/PokemonTypeBadge';
-import {useThemeColor} from '@/hooks/use-theme-color';
-import {usePokemonDetail} from '@/hooks/usePokemon';
+import { ThemedText } from '@/components/atoms/themed-text';
+import { FavoriteButton } from '@/components/icons/FavoriteButton';
+import { PokemonTypeBadge } from '@/components/icons/PokemonTypeBadge';
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { usePokemonDetail } from '@/hooks/usePokemon';
 
 const HEADER_HEIGHT = 300;
 const SPRITE_SIZE = 200;
@@ -59,9 +60,11 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
 
 export default function PokemonDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const numericId = Number(id);
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { data: pokemon, isPending, isError } = usePokemonDetail(Number(id));
+  const { data: pokemon, isPending, isError } = usePokemonDetail(numericId);
+  const [isShiny, setIsShiny] = useState(false);
 
   const iconColor = useThemeColor({}, 'text');
   const bgColor = useThemeColor({}, 'background');
@@ -100,16 +103,28 @@ export default function PokemonDetailScreen() {
           >
             <Ionicons name="chevron-back" size={28} color="#fff" />
           </Pressable>
-          <FavoriteButton id={pokemon.id} name={pokemon.name} />
+          <View style={styles.actionsRight}>
+            {pokemon.shinyUrl && (
+              <Pressable
+                onPress={() => setIsShiny((v) => !v)}
+                hitSlop={12}
+                accessibilityLabel={isShiny ? 'Show normal sprite' : 'Show shiny sprite'}
+                accessibilityRole="button"
+              >
+                <Ionicons name={isShiny ? 'sparkles' : 'sparkles-outline'} size={24} color="#fff" />
+              </Pressable>
+            )}
+            <FavoriteButton id={pokemon.id} name={pokemon.name} />
+          </View>
         </View>
 
         {/* White blob behind sprite */}
         <View style={styles.blob} />
 
         {/* Sprite */}
-        {pokemon.spriteUrl && (
+        {(isShiny ? pokemon.shinyUrl : pokemon.spriteUrl) && (
           <Image
-            source={{ uri: pokemon.spriteUrl }}
+            source={{ uri: (isShiny ? pokemon.shinyUrl : pokemon.spriteUrl)! }}
             style={styles.sprite}
             contentFit="contain"
           />
@@ -122,7 +137,29 @@ export default function PokemonDetailScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <ThemedText style={styles.name}>{pokemon.displayName}</ThemedText>
+        <View style={styles.nameRow}>
+          <Pressable
+            onPress={() =>
+              router.replace({ pathname: '/pokemon/[id]', params: { id: numericId - 1, direction: 'prev' } })
+            }
+            disabled={numericId <= 1}
+            hitSlop={12}
+            accessibilityLabel="Previous Pokémon"
+          >
+            <Ionicons name="chevron-back-circle-outline" size={28} color={numericId <= 1 ? '#ccc' : iconColor} />
+          </Pressable>
+          <ThemedText style={styles.name}>{pokemon.displayName}</ThemedText>
+          <Pressable
+            onPress={() =>
+              router.replace({ pathname: '/pokemon/[id]', params: { id: numericId + 1, direction: 'next' } })
+            }
+            disabled={numericId >= 1025}
+            hitSlop={12}
+            accessibilityLabel="Next Pokémon"
+          >
+            <Ionicons name="chevron-forward-circle-outline" size={28} color={numericId >= 1025 ? '#ccc' : iconColor} />
+          </Pressable>
+        </View>
         <ThemedText style={styles.number}>N°{pokemon.number}</ThemedText>
 
         <View style={styles.typesRow}>
@@ -224,11 +261,6 @@ const styles = StyleSheet.create({
     paddingTop: 28,
     gap: 12,
   },
-  name: {
-    paddingTop: 22,
-    fontSize: 34,
-    fontWeight: '700',
-  },
   number: {
     fontSize: 16,
     fontWeight: '600',
@@ -279,6 +311,24 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 60,
     left: 20,
+  },
+  actionsRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  name: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 34,
+    fontWeight: '700',
+    paddingTop: 22,
   },
   sectionTitle: {
     fontSize: 16,

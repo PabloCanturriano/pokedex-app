@@ -28,7 +28,7 @@ export type PokemonDetail = {
   height: number;
   weight: number;
   types: { type: { name: string } }[];
-  sprites: { front_default: string | null; officialArtwork: string | null };
+  sprites: { front_default: string | null; front_shiny: string | null; officialArtwork: string | null; officialArtworkShiny: string | null };
   ability: string | null;
   category: string | null;
   flavorText: string | null;
@@ -39,8 +39,9 @@ export type PokemonDetail = {
 
 type GqlSprites = {
   front_default: string | null;
+  front_shiny: string | null;
   other?: {
-    'official-artwork'?: { front_default: string | null };
+    'official-artwork'?: { front_default: string | null; front_shiny: string | null };
   };
 };
 
@@ -84,8 +85,9 @@ export function normalizePokemonDetail(raw: GqlPokemonDetail): PokemonDetail {
     })),
     sprites: {
       front_default: raw.pokemon_v2_pokemonsprites[0]?.sprites?.front_default ?? null,
-      officialArtwork:
-        raw.pokemon_v2_pokemonsprites[0]?.sprites?.other?.['official-artwork']?.front_default ?? null,
+      front_shiny: raw.pokemon_v2_pokemonsprites[0]?.sprites?.front_shiny ?? null,
+      officialArtwork: raw.pokemon_v2_pokemonsprites[0]?.sprites?.other?.['official-artwork']?.front_default ?? null,
+      officialArtworkShiny: raw.pokemon_v2_pokemonsprites[0]?.sprites?.other?.['official-artwork']?.front_shiny ?? null,
     },
     ability,
     stats: raw.pokemon_v2_pokemonstats.map((s) => ({

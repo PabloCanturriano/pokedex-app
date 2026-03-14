@@ -1,4 +1,4 @@
-import {gqlQuery} from '@/api/graphql-client';
+import { gqlQuery } from '@/api/graphql-client';
 import {
     GET_FAVORITES,
     GET_FAVORITES_BY_TYPE,
@@ -20,7 +20,7 @@ import {
     type PokemonListItem,
     type PokemonListPage,
 } from '@/api/pokemon/types';
-import type {SortOption} from '@/constants/pokemon';
+import type { SortOption } from '@/constants/pokemon';
 
 export const PAGE_SIZE = 20;
 

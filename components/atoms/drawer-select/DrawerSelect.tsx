@@ -37,6 +37,7 @@ export function DrawerSelect<T extends string = string>({
   // Use the selected option's type color when available
   const pillBackground = selected.color ?? defaultPillBackground;
   const pillTextColor = selected.textColor ?? (selected.color ? '#FFFFFF' : defaultPillTextColor);
+  const iconName = icon ?? 'swap-vertical';
 
   const translateY = useSharedValue(0);
 
@@ -75,7 +76,7 @@ export function DrawerSelect<T extends string = string>({
         accessibilityLabel={title}
       >
         {type === 'icon' ? (
-          <Ionicons name={icon as any} size={24} color={pillTextColor} />
+          <Ionicons name={iconName} size={24} color={pillTextColor} />
         ) : (
           <>
             <Text style={[styles.pillText, { color: pillTextColor }]}>{selected.label}</Text>

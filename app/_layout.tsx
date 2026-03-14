@@ -22,7 +22,21 @@ export default function RootLayout() {
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="pokemon/[id]" options={{ headerShown: false, animation: 'slide_from_right' }} />
+            <Stack.Screen
+              name="pokemon/[id]"
+              options={({ route }) => {
+                const params = route.params;
+                const direction =
+                  params && typeof params === 'object' && 'direction' in params
+                    ? (params as Record<string, unknown>).direction
+                    : undefined;
+
+                return {
+                  headerShown: false,
+                  animation: direction === 'prev' ? 'slide_from_left' : 'slide_from_right',
+                };
+              }}
+            />
             <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
           </Stack>
           <StatusBar style="auto" />
