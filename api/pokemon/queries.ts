@@ -182,3 +182,26 @@ export const GET_POKEMON_BY_TYPE_AND_REGION = `
     }
   }
 `;
+
+export const GET_ITEMS = `
+  query GetItems($limit: Int!, $offset: Int!) {
+    pokemon_v2_item(
+      limit: $limit
+      offset: $offset
+      order_by: { id: asc }
+    ) {
+      id
+      name
+      cost
+      pokemon_v2_itemnames(where: { language_id: { _eq: 9 } }, limit: 1) {
+        name
+      }
+      pokemon_v2_itemcategory {
+        name
+      }
+      pokemon_v2_itemflavortexts(where: { language_id: { _eq: 9 } }, limit: 1) {
+        flavor_text
+      }
+    }
+  }
+`;

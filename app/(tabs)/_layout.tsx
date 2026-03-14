@@ -1,8 +1,8 @@
 import { Tabs } from 'expo-router';
 
 import { HapticTab } from '@/components/atoms/haptic-tab';
+import { ItemsTabIcon } from '@/components/icons/ItemsTabIcon';
 import { PokedexTabIcon } from '@/components/icons/PokedexTabIcon';
-import { RegionsTabIcon } from '@/components/icons/RegionsTabIcon';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
@@ -25,10 +25,12 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="regions"
+        name="items"
         options={{
-          title: 'Regions',
-          tabBarIcon: ({ focused, size }) => <RegionsTabIcon focused={focused} size={size} />,
+          title: 'Items',
+          tabBarIcon: ({ focused, size, color }) => (
+            <ItemsTabIcon focused={focused} size={size} color={color} />
+          ),
         }}
       />
     </Tabs>

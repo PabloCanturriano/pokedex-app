@@ -47,6 +47,44 @@ export type PokemonDetail = {
   evolutionChain: EvolutionChainItem[];
 };
 
+// ── Item types ────────────────────────────────────────────────────────────────
+
+export type Item = {
+  id: number;
+  name: string;
+  displayName: string;
+  cost: number;
+  category: string;
+  flavorText: string | null;
+  spriteUrl: string;
+};
+
+export type ItemListPage = {
+  results: Item[];
+  hasMore: boolean;
+};
+
+export type GqlItem = {
+  id: number;
+  name: string;
+  cost: number;
+  pokemon_v2_itemnames: { name: string }[];
+  pokemon_v2_itemcategory: { name: string } | null;
+  pokemon_v2_itemflavortexts: { flavor_text: string }[];
+};
+
+export function normalizeItem(raw: GqlItem): Item {
+  return {
+    id: raw.id,
+    name: raw.name,
+    displayName: raw.pokemon_v2_itemnames[0]?.name ?? raw.name,
+    cost: raw.cost,
+    category: raw.pokemon_v2_itemcategory?.name ?? 'unknown',
+    flavorText: raw.pokemon_v2_itemflavortexts[0]?.flavor_text?.replace(/[\n\f\r]/g, ' ') ?? null,
+    spriteUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${raw.name}.png`,
+  };
+}
+
 // ── Internal GQL raw shapes (used only in fetchers) ───────────────────────────
 
 type GqlSprites = {
