@@ -87,6 +87,13 @@ export type GqlItemDetail = {
   pokemon_v2_itemeffecttexts: { short_effect: string; effect: string }[];
 };
 
+function cleanEffectText(text: string): string {
+  return text
+    .replace(/\[([^\]]+)\]\{[^}]+\}/g, '$1') // [text]{mechanic:foo} → text
+    .replace(/[\n\f\r]/g, ' ')
+    .trim();
+}
+
 export function normalizeItemDetail(raw: GqlItemDetail): ItemDetail {
   return {
     id: raw.id,
@@ -96,11 +103,16 @@ export function normalizeItemDetail(raw: GqlItemDetail): ItemDetail {
     sellPrice: Math.floor(raw.cost / 2),
     category: raw.pokemon_v2_itemcategory?.name ?? 'unknown',
     flavorText: raw.pokemon_v2_itemflavortexts[0]?.flavor_text?.replace(/[\n\f\r]/g, ' ') ?? null,
-    shortEffect: raw.pokemon_v2_itemeffecttexts[0]?.short_effect ?? null,
-    effect: raw.pokemon_v2_itemeffecttexts[0]?.effect ?? null,
+    shortEffect: raw.pokemon_v2_itemeffecttexts[0]?.short_effect
+      ? cleanEffectText(raw.pokemon_v2_itemeffecttexts[0].short_effect)
+      : null,
+    effect: raw.pokemon_v2_itemeffecttexts[0]?.effect
+      ? cleanEffectText(raw.pokemon_v2_itemeffecttexts[0].effect)
+      : null,
     spriteUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${raw.name}.png`,
   };
 }
+
 
 export type GqlItem = {
   id: number;

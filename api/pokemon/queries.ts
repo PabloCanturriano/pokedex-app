@@ -183,6 +183,7 @@ export const GET_POKEMON_BY_TYPE_AND_REGION = `
   }
 `;
 
+
 export const GET_ITEM_DETAIL = `
   query GetItemDetail($id: Int!) {
     pokemon_v2_item_by_pk(id: $id) {

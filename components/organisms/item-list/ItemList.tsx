@@ -1,4 +1,5 @@
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import { MagikarpEmptyState } from '@/components/atoms/magikarp-empty-state';
 import { Typography } from '@/components/atoms/typography';
@@ -9,9 +10,11 @@ type Props = {
   pockets: string[];
   search: string;
   query: string;
+  color: string;
 };
 
-export function ItemList({ pockets, search, query }: Props) {
+export function ItemList({ pockets, search, query, color }: Props) {
+  const router = useRouter();
   const { data, isPending, isError, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useItemsList(pockets, search);
 
@@ -39,7 +42,15 @@ export function ItemList({ pockets, search, query }: Props) {
       }}
       onEndReachedThreshold={0.4}
       ListFooterComponent={isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null}
-      renderItem={({ item }) => <ItemCard item={item} />}
+      renderItem={({ item }) => (
+        <Pressable
+          onPress={() =>
+            router.push({ pathname: '/items/[id]', params: { id: item.id, color } })
+          }
+        >
+          <ItemCard item={item} />
+        </Pressable>
+      )}
     />
   );
 }

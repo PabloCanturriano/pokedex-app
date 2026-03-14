@@ -10,7 +10,7 @@ import { Colors } from '@/constants/theme';
 import { useItems } from '@/hooks/useItems';
 
 export default function ItemsScreen() {
-  const { activeTab, query, setQuery, activePockets, search, handleTabChange } = useItems();
+  const { activeTab, query, setQuery, activePockets, activeColor, search, handleTabChange } = useItems();
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: Colors.background }]}>
@@ -24,7 +24,7 @@ export default function ItemsScreen() {
         value={query}
         onChangeText={setQuery}
       />
-      <ItemList key={activeTab} pockets={activePockets} search={search} query={query} />
+      <ItemList key={activeTab} pockets={activePockets} search={search} query={query} color={activeColor} />
     </SafeAreaView>
   );
 }

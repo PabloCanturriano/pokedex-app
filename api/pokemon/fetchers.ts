@@ -2,6 +2,7 @@ import { gqlQuery } from '@/api/graphql-client';
 import {
   GET_FAVORITES,
   GET_FAVORITES_BY_TYPE,
+  GET_ITEM_DETAIL,
   GET_ITEMS,
   GET_POKEMON,
   GET_POKEMON_BY_REGION,
@@ -13,10 +14,13 @@ import {
 } from '@/api/pokemon/queries';
 import {
   type GqlItem,
+  type GqlItemDetail,
   type GqlPokemon,
   type GqlPokemonDetail,
+  type ItemDetail,
   type ItemListPage,
   normalizeItem,
+  normalizeItemDetail,
   normalizePokemon,
   normalizePokemonDetail,
   type Pokemon,
@@ -114,7 +118,19 @@ export async function searchPokemon(query: string): Promise<PokemonListItem[]> {
   );
   return data.pokemon_v2_pokemon.map((p) => ({ id: p.id, name: p.name }));
 }
-export async function fetchItems(offset: number, pockets: string[], search: string): Promise<ItemListPage> {
+export async function fetchItemDetail(id: number): Promise<ItemDetail> {
+  const data = await gqlQuery<{ pokemon_v2_item_by_pk: GqlItemDetail | null }>(GET_ITEM_DETAIL, {
+    id,
+  });
+  if (!data.pokemon_v2_item_by_pk) throw new Error(`Item #${id} not found`);
+  return normalizeItemDetail(data.pokemon_v2_item_by_pk);
+}
+
+export async function fetchItems(
+  offset: number,
+  pockets: string[],
+  search: string
+): Promise<ItemListPage> {
   const data = await gqlQuery<{ pokemon_v2_item: GqlItem[] }>(GET_ITEMS, {
     limit: PAGE_SIZE,
     offset,

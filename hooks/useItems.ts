@@ -10,12 +10,14 @@ export function useItems() {
   const debouncedQuery = useDebounce(query);
   const search = debouncedQuery.trim() ? `%${debouncedQuery.trim()}%` : '%%';
 
-  const activePockets = ITEM_TABS.find((t) => t.value === activeTab)!.pockets;
+  const activeTabData = ITEM_TABS.find((t) => t.value === activeTab)!;
+  const activePockets = activeTabData.pockets;
+  const activeColor = activeTabData.color;
 
   function handleTabChange(value: string) {
     setActiveTab(value as ItemTab);
     setQuery('');
   }
 
-  return { activeTab, query, setQuery, activePockets, search, handleTabChange };
+  return { activeTab, query, setQuery, activePockets, activeColor, search, handleTabChange };
 }
