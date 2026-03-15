@@ -22,7 +22,7 @@ jobs:
         run: npm ci
 
       - name: Generate Expo Router types
-        run: npx expo export --platform web --output-dir /tmp/expo-out
+        run: node scripts/generate-router-types.js
 
       - name: Type check
         run: npx tsc --noEmit
